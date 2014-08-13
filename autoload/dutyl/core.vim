@@ -5,11 +5,13 @@ function! dutyl#core#create()
     let l:modules=[]
     for l:moduleDefinition in dutyl#register#list()
         let l:module=function(l:moduleDefinition.constructor)()
-        let l:module.name=l:moduleDefinition.name
-        if !has_key(l:module,'supportsFunction')
-            let l:module.supportsFunction=function('dutyl#core#supportsFunction')
+        if !empty(l:module) "Empty module = can not be used
+            let l:module.name=l:moduleDefinition.name
+            if !has_key(l:module,'supportsFunction')
+                let l:module.supportsFunction=function('dutyl#core#supportsFunction')
+            endif
+            call add(l:modules,l:module)
         endif
-        call add(l:modules,l:module)
     endfor
 
     let l:result.modules=l:modules
