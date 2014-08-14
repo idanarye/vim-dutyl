@@ -1,3 +1,5 @@
+command! DutylReinit call dutyl#core#instance(1)
+
 command! DutylConfigFileEditImportPaths call dutyl#configFile#editImportPaths()
 
 command! DutylDCDstartServer call dutyl#dcd#startServer()

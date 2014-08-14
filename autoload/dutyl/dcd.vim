@@ -65,6 +65,22 @@ function! s:functions.complete(args) abort
     return []
 endfunction
 
+function! s:functions.ddocForSymobolInBuffer(args) abort
+    "Register the import paths:
+    call s:registerImportPaths(a:args.importPaths)
+
+    "Run DCD
+    let l:scanResult=s:runDCDOnBufferBytePosition(a:args.bufferLines,a:args.bytePos,['--doc'])
+    let l:result=[]
+    for l:ddoc in split(l:scanResult,'\r\n\|\n\|\r')
+	let l:ddoc=substitute(l:ddoc,'\\n',"\n",'g')
+	let l:ddoc=substitute(l:ddoc,'\\\\',"\\",'g')
+	call add(l:result,l:ddoc)
+    endfor
+    return l:result
+endfunction
+
+
 "Run DCD to get autocompletion results
 function! s:runDCDToGetAutocompletion(bufferLines,bytePos) abort
 	return s:runDCDOnBufferBytePosition(a:bufferLines,a:bytePos,[])

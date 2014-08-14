@@ -132,3 +132,12 @@ function! dutyl#core#runToolInBackground(tool,args) abort
         execute '!'.s:createRunToolCommand(a:tool,a:args).' > /dev/null &'
     endif
 endfunction
+
+"Return the byte position. The arguments are the line and the column:
+" - Use current line if line argument not supplied. Can be string
+" - Use current column if column argument not supplied. Must be numeric
+function! dutyl#core#bytePosition(...) abort
+    let l:line=get(a:000,0,'.')
+    let l:column=get(a:000,1,col('.'))
+    return line2byte(l:line)+l:column
+endfunction

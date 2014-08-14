@@ -43,10 +43,36 @@ function! dutyl#dComplete(findstart,base) abort
                     \'base':a:base,
                     \'importPaths':l:dutyl.importPaths(),
                     \'bufferLines':l:bufferLines,
-                    \'bytePos':line2byte('.')+b:completionColumn,
-                    \'completionLine':line('.'),
-                    \'completionColumn':b:completionColumn,
+                    \'bytePos':dutyl#core#bytePosition('.',b:completionColumn),
+                    \'lineNumber':line('.'),
+                    \'columnNumber':b:completionColumn,
                     \}
         return l:dutyl.complete(l:args)
     endif
+endfunction
+
+function! dutyl#displayDDocForSymbolUnderCursor() abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('importPaths','ddocForSymobolInBuffer')
+    catch
+        echoerr 'Unable to display DDoc: '.v:exception
+        return
+    endtry
+    let l:args={
+                \'importPaths':l:dutyl.importPaths(),
+                \'bufferLines':getline(1,'$'),
+                \'symbol':expand('<cword>'),
+                \'bytePos':dutyl#core#bytePosition(),
+                \'lineNumber':line('.'),
+                \'columnNumber':col('.'),
+                \}
+    let l:ddocs=l:dutyl.ddocForSymobolInBuffer(l:args)
+    for l:i in range(len(l:ddocs))
+        if 0<l:i
+            "Print a vertical line:
+            echo repeat('_',&columns-1)
+            echo ' '
+        endif
+        echo l:ddocs[l:i]
+    endfor
 endfunction
