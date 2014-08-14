@@ -1,3 +1,3 @@
 setlocal omnifunc=dutyl#dComplete
 
-command! -buffer DutylDDoc call dutyl#displayDDocForSymbolUnderCursor()
+command! -buffer DUddoc call dutyl#displayDDocForSymbolUnderCursor()
