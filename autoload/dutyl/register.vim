@@ -23,6 +23,10 @@ function! dutyl#register#tool(name,path) abort
 endfunction
 
 function! dutyl#register#getToolPath(name) abort
+    if !exists('s:registeredTools')
+        return a:name
+    end
+
     return get(s:registeredTools,a:name,a:name)
 endfunction
 
@@ -37,6 +41,9 @@ function! s:sortModulesByPriority(module1,module2) abort
 endfunction
 
 function! dutyl#register#list() abort
+    if !exists('s:registeredModules')
+        return []
+    endif
     let l:result=values(s:registeredModules)
     let l:result=sort(l:result,function('s:sortModulesByPriority'))
     return l:result

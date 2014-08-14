@@ -62,7 +62,7 @@ function! s:requireFunctions(...) dict abort
             let l:result[l:functionName]=l:Function
         else
             let l:errorMessage='Function `'.l:functionName.'` is not supported by currently loaded Dutyl modules.'
-            if !empty(l:reason)
+            if !empty(l:reasons)
                 let l:errorMessage=l:errorMessage.' Possible reasons: '.join(l:reasons,', ')
             endif
             throw l:errorMessage
