@@ -1,8 +1,12 @@
-function! dutyl#register#reset()
+function! dutyl#register#resetModules() abort
     let s:registeredModules={}
 endfunction
 
-function! dutyl#register#register(name,constructor,priority)
+function! dutyl#register#resetTools() abort
+    let s:registeredTools={}
+endfunction
+
+function! dutyl#register#module(name,constructor,priority) abort
     if !exists('s:registeredModules')
         let s:registeredModules={}
     end
@@ -10,7 +14,19 @@ function! dutyl#register#register(name,constructor,priority)
     let s:registeredModules[a:name]={'name':a:name,'constructor':a:constructor,'priority':a:priority}
 endfunction
 
-function! s:sortModulesByPriority(module1,module2)
+function! dutyl#register#tool(name,path) abort
+    if !exists('s:registeredTools')
+        let s:registeredTools={}
+    end
+
+    let s:registeredTools[a:name]=a:path
+endfunction
+
+function! dutyl#register#getToolPath(name) abort
+    return get(s:registeredTools,a:name,a:name)
+endfunction
+
+function! s:sortModulesByPriority(module1,module2) abort
     if a:module1.priority==a:module2.priority
         return 0
     elseif a:module1.priority<a:module2.priority
@@ -20,7 +36,7 @@ function! s:sortModulesByPriority(module1,module2)
     endif
 endfunction
 
-function! dutyl#register#list()
+function! dutyl#register#list() abort
     let l:result=values(s:registeredModules)
     let l:result=sort(l:result,function('s:sortModulesByPriority'))
     return l:result

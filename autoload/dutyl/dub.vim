@@ -1,9 +1,8 @@
-
-function! dutyl#dub#new()
+function! dutyl#dub#new() abort
     if !filereadable('dub.json')
         return {}
     endif
-    if empty('dub')
+    if !dutyl#core#toolExecutable('dub')
         return {}
     endif
 
@@ -14,8 +13,10 @@ endfunction
 
 let s:functions={}
 
-function! s:functions.importPaths() dict
-    let l:result=[]
+"Return all the import paths DCD knows about, plus the ones in
+"g:dutyl_stdImportPaths
+function! s:functions.importPaths() dict abort
+    let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
 
     let l:info=s:dubDescribe()
     for l:package in l:info.packages
@@ -34,8 +35,10 @@ function! s:functions.importPaths() dict
     return l:result
 endfunction
 
-function! s:dubDescribe()
-    let l:result=system('dub describe')
+"Calls 'dub describe' and turns the result to Vim's data types
+function! s:dubDescribe() abort
+    "let l:result=system('dub describe')
+    let l:result=dutyl#core#runTool('dub','describe')
     "Replace true with 1 and false with 0
     let l:result=substitute(l:result,'\vtrue\,?[\n\r]','1\n','g')
     let l:result=substitute(l:result,'\vfalse\,?[\n\r]','0\n','g')

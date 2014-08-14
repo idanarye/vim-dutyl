@@ -1,5 +1,5 @@
 "Checks if the path is an absolute path
-function! dutyl#util#isPathAbsolute(path)
+function! dutyl#util#isPathAbsolute(path) abort
 	if has('win32')
 		return a:path=~':' || a:path[0]=='%' "Absolute paths in Windows contain : or start with an environment variable
 	else
