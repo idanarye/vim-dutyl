@@ -163,8 +163,16 @@ endfunction
 "Return the byte position. The arguments are the line and the column:
 " - Use current line if line argument not supplied. Can be string
 " - Use current column if column argument not supplied. Must be numeric
+" Always uses unix file format.
 function! dutyl#core#bytePosition(...) abort
     let l:line=get(a:000,0,'.')
     let l:column=get(a:000,1,col('.'))
-    return line2byte(l:line)+l:column
+
+    let l:oldFileFormat=&fileformat
+    try
+        set fileformat=unix
+        return line2byte(l:line)+l:column
+    finally
+        let &fileformat=l:oldFileFormat
+    endtry
 endfunction
