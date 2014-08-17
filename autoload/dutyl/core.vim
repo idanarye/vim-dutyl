@@ -71,6 +71,16 @@ function! s:requireFunctions(...) dict abort
     return l:result
 endfunction
 
+"Use vimproc if available under windows for escaping characters - because
+"that's what the dutyl#core#system command will use!
+function! dutyl#core#shellescape(string) abort
+    if has('win32') && exists(':VimProcBang') "We don't need vimproc when we use linux
+        return vimproc#shellescape(a:string)
+    else
+        return shellescape(a:string)
+    endif
+endfunction
+
 "Use vimproc if available under windows to prevent opening a console window
 function! dutyl#core#system(command,...) abort
     if has('win32') && exists(':VimProcBang') "We don't need vimproc when we use linux
@@ -103,6 +113,23 @@ function! s:createRunToolCommand(tool,args) abort
     if !executable(l:tool)
         throw '`'.l:tool.'` is not executable'
     endif
+    let l:result=vimproc#shellescape(l:tool)
+    if type('')==type(a:args)
+        let l:result=l:result.' '.a:args
+    elseif type([])==type(a:args)
+        for l:arg in a:args
+            let l:result=l:result.' '.vimproc#shellescape(l:arg)
+        endfor
+    endif
+    return l:result
+endfunction
+
+"Like s:createRunToolCommand, but uses regular Windows format
+function! s:createRunToolCommandForWindowsFormat(tool,args) abort
+    let l:tool=dutyl#register#getToolPath(a:tool)
+    if !executable(l:tool)
+        throw '`'.l:tool.'` is not executable'
+    endif
     let l:result=shellescape(l:tool)
     if type('')==type(a:args)
         let l:result=l:result.' '.a:args
@@ -127,7 +154,7 @@ endfunction
 "Run a tool in the background
 function! dutyl#core#runToolInBackground(tool,args) abort
     if has('win32')
-        execute '!start '.s:createRunToolCommand(a:tool,a:args)
+        execute '!start '.s:createRunToolCommandForWindowsFormat(a:tool,a:args)
     else
         execute '!'.s:createRunToolCommand(a:tool,a:args).' > /dev/null &'
     endif
