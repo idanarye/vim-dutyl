@@ -47,3 +47,10 @@ have to supply the path for them using `dutyl#register#tool` like so:
 call dutyl#register#tool('dcd-client','/path/to/DCD/dcd-client')
 call dutyl#register#tool('dcd-server','/path/to/DCD/dcd-server')
 ```
+
+Under Windows, Dutyl uses [VimProc](https://github.com/Shougo/vimproc.vim) when
+available to prevent opening a console windows every time a command needs to be
+ran. To prevent using VimProc, set `g:dutyl_dontUseVimProc` to 1:
+```vim
+let g:dutyl_dontUseVimProc=1
+```

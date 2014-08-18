@@ -39,6 +39,9 @@ endfunction
 function! s:dubDescribe() abort
     "let l:result=system('dub describe')
     let l:result=dutyl#core#runTool('dub','describe')
+    if !empty(dutyl#core#shellReturnCode())
+        throw 'Failed to execute `dub describe`'
+    endif
     "Replace true with 1 and false with 0
     let l:result=substitute(l:result,'\vtrue\,?[\n\r]','1\n','g')
     let l:result=substitute(l:result,'\vfalse\,?[\n\r]','0\n','g')
