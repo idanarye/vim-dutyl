@@ -1,7 +1,7 @@
 INTRODUCTION
 ============
 
-Dutyl operate various Dlang tools to help you program D in Vim. Instead of
+Dutyl operates various Dlang tools to help you program D in Vim. Instead of
 having a separate plugin for each tool, Dutyl can use multiple plugins and
 use them together - for example, use DUB to get a list of import paths the
 project is using and pass that list to DCD to get autocompleting for symbols
