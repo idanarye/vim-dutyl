@@ -11,7 +11,7 @@ let s:functions={}
 function! s:functions.importPaths() dict abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
     let l:result=extend(l:result,s:readConfigFile().importPaths)
-    return l:result
+    return map(l:result,'dutyl#util#cleanPathFromLastCharacterIfPathSeparator(v:val)')
 endfunction
 
 "Return a Vim Dictionary of the configuration in the configuration file

@@ -7,3 +7,12 @@ function! dutyl#util#isPathAbsolute(path) abort
 	endif
 endfunction
 
+"Exactly what it says on the tin
+function! dutyl#util#cleanPathFromLastCharacterIfPathSeparator(path) abort
+	let l:lastCharacter=a:path[len(a:path)-1]
+	if '/'==l:lastCharacter || '\'==l:lastCharacter
+		return a:path[0:-2]
+	else
+		return a:path
+	endif
+endfunction
