@@ -85,6 +85,16 @@ where you write each import path in a separate line and when you save that
 buffer it'll be written to the config file.
 
 
+DUB                                                              *dutyl-dub*
+
+If the project's folder has "dub.json" or "package.json", Dutyl will use DUB
+to automatically figure out the import paths.
+
+Note: If the project file is badly formatted(rejected by DUB), or if contains
+dependencies that have not yet been downloaded by DUB, Dutyl's call to DUB
+will fail and it won't be able to get the import paths.
+
+
 AUTOCOMPLETE                                            *dutyl-autocomplete*
 
 Autocomplete requires DCD(see |dutyl-dcd-server|) and either DUB or a config
