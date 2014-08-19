@@ -1,5 +1,6 @@
 function! dutyl#dub#new() abort
     if !filereadable('dub.json')
+                \&& !filereadable('package.json')
         return {}
     endif
     if !dutyl#core#toolExecutable('dub')
@@ -42,6 +43,11 @@ function! s:dubDescribe() abort
     if !empty(dutyl#core#shellReturnCode())
         throw 'Failed to execute `dub describe`'
     endif
+
+    "If package.json instead of dub.json or visa versa, dub will sometimes
+    "complain but will still print the output. We want to remove that warning:
+    let l:result=substitute(l:result,'\v(^|\n|\r)There was no.{-}($|\n|\r)','','g')
+
     "Replace true with 1 and false with 0
     let l:result=substitute(l:result,'\vtrue\,?[\n\r]','1\n','g')
     let l:result=substitute(l:result,'\vfalse\,?[\n\r]','0\n','g')
