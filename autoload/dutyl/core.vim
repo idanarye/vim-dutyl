@@ -167,9 +167,9 @@ endfunction
 "Run a tool in the background
 function! dutyl#core#runToolInBackground(tool,args) abort
     if has('win32')
-        execute '!start '.s:createRunToolCommandIgnoreVimproc(a:tool,a:args)
+        silent execute '!start '.s:createRunToolCommandIgnoreVimproc(a:tool,a:args)
     else
-        execute '!'.s:createRunToolCommand(a:tool,a:args).' > /dev/null &'
+        silent execute '!'.s:createRunToolCommand(a:tool,a:args).' > /dev/null &'
     endif
 endfunction
 
