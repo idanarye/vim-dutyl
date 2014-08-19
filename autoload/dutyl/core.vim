@@ -71,9 +71,30 @@ function! s:requireFunctions(...) dict abort
     return l:result
 endfunction
 
+"Return 1 if it's OK to use VimProc
+function! s:useVimProcInWindows()
+    if !exists(':VimProcBang')
+        return 0
+    elseif !exists('g:dutyl_dontUseVimProc')
+        return 1
+    else
+        return empty(g:dutyl_dontUseVimProc)
+    endif
+endfunction
+
+"Use vimproc if available under windows for escaping characters - because
+"that's what the dutyl#core#system command will use!
+function! dutyl#core#shellescape(string) abort
+    if has('win32') && s:useVimProcInWindows() "We don't need vimproc when we use linux
+        return vimproc#shellescape(a:string)
+    else
+        return shellescape(a:string)
+    endif
+endfunction
+
 "Use vimproc if available under windows to prevent opening a console window
 function! dutyl#core#system(command,...) abort
-    if has('win32') && exists(':VimProcBang') "We don't need vimproc when we use linux
+    if has('win32') && s:useVimProcInWindows() "We don't need vimproc when we use linux
         if empty(a:000)
             return vimproc#system(a:command)
         else
@@ -90,7 +111,7 @@ endfunction
 
 "Returns the return code from the last run of dutyl#core#system
 function! dutyl#core#shellReturnCode() abort
-    if has('win32') && exists(':VimProcBang') "We don't need vimproc when we use linux
+    if has('win32') && s:useVimProcInWindows() "We don't need vimproc when we use linux
         return vimproc#get_last_status()
     else
         return v:shell_error
@@ -99,6 +120,25 @@ endfunction
 
 "Create the command line for running a tool
 function! s:createRunToolCommand(tool,args) abort
+    let l:tool=dutyl#register#getToolPath(a:tool)
+    if !executable(l:tool)
+        throw '`'.l:tool.'` is not executable'
+    endif
+    let l:result=dutyl#core#shellescape(l:tool)
+    if type('')==type(a:args)
+        let l:result=l:result.' '.a:args
+    elseif type([])==type(a:args)
+        for l:arg in a:args
+            let l:result=l:result.' '.dutyl#core#shellescape(l:arg)
+        endfor
+    endif
+    return l:result
+endfunction
+
+"Like s:createRunToolCommand, but doesn't try to use VimProc even if Dutyl is
+"configured to use it. This is used when we want to run things in the
+"background.
+function! s:createRunToolCommandIgnoreVimproc(tool,args) abort
     let l:tool=dutyl#register#getToolPath(a:tool)
     if !executable(l:tool)
         throw '`'.l:tool.'` is not executable'
@@ -127,7 +167,7 @@ endfunction
 "Run a tool in the background
 function! dutyl#core#runToolInBackground(tool,args) abort
     if has('win32')
-        execute '!start '.s:createRunToolCommand(a:tool,a:args)
+        execute '!start '.s:createRunToolCommandIgnoreVimproc(a:tool,a:args)
     else
         execute '!'.s:createRunToolCommand(a:tool,a:args).' > /dev/null &'
     endif
@@ -136,8 +176,16 @@ endfunction
 "Return the byte position. The arguments are the line and the column:
 " - Use current line if line argument not supplied. Can be string
 " - Use current column if column argument not supplied. Must be numeric
+" Always uses unix file format.
 function! dutyl#core#bytePosition(...) abort
     let l:line=get(a:000,0,'.')
     let l:column=get(a:000,1,col('.'))
-    return line2byte(l:line)+l:column
+
+    let l:oldFileFormat=&fileformat
+    try
+        set fileformat=unix
+        return line2byte(l:line)+l:column
+    finally
+        let &fileformat=l:oldFileFormat
+    endtry
 endfunction

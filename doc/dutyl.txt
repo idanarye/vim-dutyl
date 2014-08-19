@@ -41,7 +41,7 @@ You must either set g:dutyl_stdImportPaths or configure these paths in DCD
 itself, or else DCD won't be able to recognize standard library symbols.
 
 If you want to never add the closing paren in calltips completions, set
-g:dutyl_neverAddClosingParen to 1: >
+*g:dutyl_neverAddClosingParen* to 1: >
 	let g:dutyl_neverAddClosingParen=1
 <
 Dutyl will assume that tools are in the system's PATH. If they are not, you'll
@@ -54,6 +54,12 @@ that you only call |dutyl#register#tool| after you run the plugin manager's
 command for updating the runtime path(pathogen#infect in case of Pathogen,
 vundle#end in case of Vundle, or whatever the command is for whatever the tool
 you are using).
+
+Under Windows, Dutyl uses VimProc(https://github.com/Shougo/vimproc.vim) when
+available to prevent opening a console windows every time a command needs to
+be ran. To prevent using VimProc, set *g:dutyl_dontUseVimProc* to 1: >
+	let g:dutyl_dontUseVimProc=1
+<
 
 
 DCD SERVER                                                *dutyl-dcd-server*
