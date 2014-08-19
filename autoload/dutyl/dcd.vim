@@ -20,11 +20,11 @@ function! s:registerImportPaths(importPaths) abort
 endfunction
 
 function! dutyl#dcd#startServer() abort
-    echo dutyl#core#runToolInBackground('dcd-server','')
+    call dutyl#core#runToolInBackground('dcd-server','')
 endfunction
 
 function! dutyl#dcd#stopServer() abort
-    echo dutyl#core#runToolInBackground('dcd-client','--shutdown')
+    call dutyl#core#runToolInBackground('dcd-client','--shutdown')
 endfunction
 
 let s:functions={}
