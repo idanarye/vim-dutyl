@@ -25,7 +25,7 @@ function! s:functions.importPaths() dict abort
             if dutyl#util#isPathAbsolute(l:importPath)
                 call add(l:result,l:importPath)
             else
-                let l:absoluteImportPath=globpath(l:package.path,l:importPath)
+                let l:absoluteImportPath=globpath(l:package.path,l:importPath,1)
                 if !empty(l:absoluteImportPath)
                     call add(l:result,l:absoluteImportPath)
                 endif
@@ -33,7 +33,7 @@ function! s:functions.importPaths() dict abort
         endfor
     endfor
 
-    return map(l:result,'dutyl#util#cleanPathFromLastCharacterIfPathSeparator(v:val)')
+    return dutyl#util#normalizeImportPaths(l:result)
 endfunction
 
 "Calls 'dub describe' and turns the result to Vim's data types
