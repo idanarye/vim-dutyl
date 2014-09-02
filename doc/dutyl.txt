@@ -21,6 +21,7 @@ Currently supported features:
 * Getting the imports list from DUB or from a configuration file
 * Autocompletion using DCD
 * Finding DDoc using DCD
+* Finding declarations using DCD
 
 
 REQUIREMENTS                                            *dutyl-requirements*
@@ -65,7 +66,7 @@ be ran. To prevent using VimProc, set *g:dutyl_dontUseVimProc* to 1: >
 DCD SERVER                                                *dutyl-dcd-server*
 
 Dutyl can not use DCD if the DCD server is not running. To start the DCD
-server, use |:DUDCDstartServer|. To stop it, use |:DUDCDstopServer|
+server, use *:DUDCDstartServer*. To stop it, use *:DUDCDstopServer*
 
 
 CONFIG FILE                                              *dutyl-config-file*
@@ -108,5 +109,14 @@ DDOC-PRINTING                                          *dutyl-ddoc-printing*
 DDoc printing requires DCD(see |dutyl-dcd-server|) and either DUB or a config
 file.
 
-Place the cursor on that symbol and run *:DUddoc* to print all DDocs
-associated with that symbol.
+Place the cursor on a symbol and run *:DUddoc* to print all DDocs associated
+with that symbol.
+
+
+JUMP-TO-DECLARATION                              *dutyl-jump-to-declaration*
+
+Jumping to declaration requires DCD(see |dutyl-dcd-server|) and either DUB or
+a config file.
+
+Place the cursor on a symbol and run *:DUjump* to jump to the declaration of
+that symbol.

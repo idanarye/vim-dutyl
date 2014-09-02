@@ -189,3 +189,81 @@ function! dutyl#core#bytePosition(...) abort
         let &fileformat=l:oldFileFormat
     endtry
 endfunction
+
+"Convert byte position in the current buffer to row and column.
+" Always uses unix file format.
+function! dutyl#core#bytePosition2rowAndColumnCurrentBuffer(bytePos) abort
+    let l:oldFileFormat=&fileformat
+    try
+        set fileformat=unix
+	    let l:line=byte2line(a:bytePos)
+        let l:lineStart=line2byte(l:line)
+        let l:column=a:bytePos-l:lineStart+2
+        return {'bytePos':a:bytePos,'line':l:line,'column':l:column}
+    finally
+        let &fileformat=l:oldFileFormat
+    endtry
+endfunction
+
+"Convert byte position from another file to row and column.
+function! dutyl#core#bytePosition2rowAndColumnAnotherFile(fileName,bytePos) abort
+    let l:column=a:bytePos
+    let l:lineNumber=1
+    for l:line in readfile(a:fileName,1)
+        let l:lineLength=strlen(l:line)
+        if l:column <= l:lineLength
+            return {
+                        \'file':a:fileName,
+                        \'bytePos':a:bytePos,
+                        \'line':l:lineNumber,
+                        \'column':l:column+1
+                        \}
+        endif
+        let l:lineNumber+=1
+        let l:column-=l:lineLength+1 "The +1 is for the linefeed character!
+    endfor
+    throw 'Byte position '.a:bytePos.' is larger than file '.a:fileName
+endfunction
+
+"Jump to a position supplied in the arguments. Expected keys of args:
+" - file: Leave false for current buffer
+" - line, column: Exactly what it says on the tin
+" - bytePos: Only used if line is not supplied
+function! dutyl#core#jumpToPosition(args) abort
+    if has_key(a:args,'file')
+        let l:bufnr=bufnr(a:args.file)
+        let l:winnr=bufwinnr(l:bufnr)
+        if 0<=l:winnr
+            execute l:winnr.'wincmd w'
+        elseif 0<=l:bufnr
+            execute 'buffer '.l:bufnr
+        else
+            execute 'edit '.a:args.file
+        endif
+    endif
+    if has_key(a:args,'line')
+        execute ':'.a:args.line
+        if has_key(a:args,'column')
+            execute 'normal! '.strdisplaywidth(getline('.')[0:a:args.column-1]).'|'
+        endif
+    elseif
+        "We'd rather not use this option - it has some problems with tabs...
+        execute 'goto '.a:args.bytePos
+    endif
+endfunction
+
+"Gather the arguments commonly used by the various operations. Extract as many
+"common arguments as possible from the supplied dutyl object.
+function! dutyl#core#gatherCommonArguments(dutyl) abort
+    let l:result={
+                \'bufferLines':getline(1,'$'),
+                \'bytePos':dutyl#core#bytePosition(),
+                \'lineNumber':line('.'),
+                \'columnNumber':col('.'),
+                \}
+    if has_key(a:dutyl,'importPaths')
+        let l:result['importPaths']=a:dutyl.importPaths()
+    endif
+
+    return l:result
+endfunction

@@ -71,6 +71,7 @@ function! s:functions.complete(args) abort
     return []
 endfunction
 
+"Retrieve ddoc from DCD
 function! s:functions.ddocForSymobolInBuffer(args) abort
     "Register the import paths:
     call s:registerImportPaths(a:args.importPaths)
@@ -82,6 +83,29 @@ function! s:functions.ddocForSymobolInBuffer(args) abort
 	let l:ddoc=substitute(l:ddoc,'\\n',"\n",'g')
 	let l:ddoc=substitute(l:ddoc,'\\\\',"\\",'g')
 	call add(l:result,l:ddoc)
+    endfor
+    return l:result
+endfunction
+
+"Retrieve declaration location from DCD
+function! s:functions.declarationsOfSymbolInBuffer(args) abort
+    "Register the import paths:
+    "call s:registerImportPaths(a:args.importPaths)
+
+    "Run DCD
+    let l:scanResult=s:runDCDOnBufferBytePosition(a:args.bufferLines,a:args.bytePos,['--symbolLocation'])
+    if l:scanResult=~'\v^Not found'
+	return []
+    endif
+    let l:result=[]
+    for l:resultLine in split(l:scanResult,'\r\n\|\n\|\r')
+	let l:lineParts=split(l:resultLine,"\t")
+	let l:bytePos=str2nr(l:lineParts[1])
+	if l:lineParts[0]=='stdin'
+	    call add(l:result,dutyl#core#bytePosition2rowAndColumnCurrentBuffer(l:bytePos))
+	else
+	    call add(l:result,dutyl#core#bytePosition2rowAndColumnAnotherFile(l:lineParts[0],l:bytePos))
+	end
     endfor
     return l:result
 endfunction

@@ -14,6 +14,7 @@ Currently supported features:
 * Getting the imports list from DUB or from a configuration file
 * Autocompletion using DCD
 * Finding DDoc using DCD
+* Finding declarations using DCD
 
 
 REQUIREMENTS

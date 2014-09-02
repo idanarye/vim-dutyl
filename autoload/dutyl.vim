@@ -37,20 +37,14 @@ function! dutyl#dComplete(findstart,base) abort
             echoerr 'Unable to complete: '.v:exception
             return
         endtry
-        let l:bufferLines=getline(1,'$')
-        let l:bufferLines[line('.')-1]=b:currentLineText
-        let l:args={
-                    \'base':a:base,
-                    \'importPaths':l:dutyl.importPaths(),
-                    \'bufferLines':l:bufferLines,
-                    \'bytePos':dutyl#core#bytePosition('.',b:completionColumn),
-                    \'lineNumber':line('.'),
-                    \'columnNumber':b:completionColumn,
-                    \}
+        let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+        let l:args.bufferLines[line('.')-1]=b:currentLineText
+        let l:args.base=a:base
         return l:dutyl.complete(l:args)
     endif
 endfunction
 
+"Exactly what it says on the tin
 function! dutyl#displayDDocForSymbolUnderCursor() abort
     try
         let l:dutyl=dutyl#core#requireFunctions('importPaths','ddocForSymobolInBuffer')
@@ -58,14 +52,8 @@ function! dutyl#displayDDocForSymbolUnderCursor() abort
         echoerr 'Unable to display DDoc: '.v:exception
         return
     endtry
-    let l:args={
-                \'importPaths':l:dutyl.importPaths(),
-                \'bufferLines':getline(1,'$'),
-                \'symbol':expand('<cword>'),
-                \'bytePos':dutyl#core#bytePosition(),
-                \'lineNumber':line('.'),
-                \'columnNumber':col('.'),
-                \}
+    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.symbol=expand('<cword>')
     let l:ddocs=l:dutyl.ddocForSymobolInBuffer(l:args)
     for l:i in range(len(l:ddocs))
         if 0<l:i
@@ -75,4 +63,22 @@ function! dutyl#displayDDocForSymbolUnderCursor() abort
         endif
         echo l:ddocs[l:i]
     endfor
+endfunction
+
+"Exactly what it says on the tin
+function! dutyl#jumpToDeclarationOfSymbolUnderCursor() abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('importPaths','declarationsOfSymbolInBuffer')
+    catch
+        echoerr 'Unable to find declaration: '.v:exception
+        return
+    endtry
+    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.symbol=expand('<cword>')
+    let l:declarationLocations=l:dutyl.declarationsOfSymbolInBuffer(l:args)
+    if empty(l:declarationLocations)
+        echo 'Unable to find declaration for symbol `'.l:args.symbol.'`'
+    elseif 1==len(l:declarationLocations)
+        call dutyl#core#jumpToPosition(l:declarationLocations[0])
+    endif
 endfunction
