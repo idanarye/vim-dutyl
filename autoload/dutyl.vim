@@ -80,5 +80,49 @@ function! dutyl#jumpToDeclarationOfSymbolUnderCursor() abort
         echo 'Unable to find declaration for symbol `'.l:args.symbol.'`'
     elseif 1==len(l:declarationLocations)
         call dutyl#core#jumpToPosition(l:declarationLocations[0])
+    else
+        let l:options=['Multiple declarations found:']
+        for l:i in range(len(l:declarationLocations))
+            call add(l:options,printf('%i) %s(%s:%s)',
+                        \l:i+1,
+                        \l:declarationLocations[i].file,
+                        \l:declarationLocations[i].line,
+                        \l:declarationLocations[i].column))
+        endfor
+        let l:selectedLocationIndex=inputlist(l:options)
+        if 0<l:selectedLocationIndex && l:selectedLocationIndex<=len(l:declarationLocations)
+            call dutyl#core#jumpToPosition(l:declarationLocations[l:selectedLocationIndex-1])
+        endif
+    endif
+endfunction
+
+"Exactly what it says on the tin
+function! dutyl#jumpToDeclarationOfSymbol(symbol) abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('importPaths','declarationsOfSymbol')
+    catch
+        echoerr 'Unable to find declaration: '.v:exception
+        return
+    endtry
+    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.symbol=a:symbol
+    let l:declarationLocations=l:dutyl.declarationsOfSymbol(l:args)
+    if empty(l:declarationLocations)
+        echo 'Unable to find declaration for symbol `'.l:args.symbol.'`'
+    elseif 1==len(l:declarationLocations)
+        call dutyl#core#jumpToPosition(l:declarationLocations[0])
+    else
+        let l:options=['Multiple declarations found:']
+        for l:i in range(len(l:declarationLocations))
+            call add(l:options,printf('%i) %s(%s:%s)',
+                        \l:i+1,
+                        \l:declarationLocations[i].file,
+                        \l:declarationLocations[i].line,
+                        \l:declarationLocations[i].column))
+        endfor
+        let l:selectedLocationIndex=inputlist(l:options)
+        if 0<l:selectedLocationIndex && l:selectedLocationIndex<=len(l:declarationLocations)
+            call dutyl#core#jumpToPosition(l:declarationLocations[l:selectedLocationIndex-1])
+        endif
     endif
 endfunction

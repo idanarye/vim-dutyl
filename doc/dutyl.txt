@@ -21,7 +21,7 @@ Currently supported features:
 * Getting the imports list from DUB or from a configuration file
 * Autocompletion using DCD
 * Finding DDoc using DCD
-* Finding declarations using DCD
+* Finding declarations using DCD or Dscanner
 
 
 REQUIREMENTS                                            *dutyl-requirements*
@@ -29,7 +29,8 @@ REQUIREMENTS                                            *dutyl-requirements*
 Dutyl requires the tools that it uses. If you want it to use DUB to get info
 about the project, you need DUB(http://code.dlang.org/download). If you want
 it to use DCD for autocompletion, you need
-DCD(https://github.com/Hackerpilot/DCD).
+DCD(https://github.com/Hackerpilot/DCD). If you want it to use Dscanner, you
+need Dscanner(https://github.com/Hackerpilot/Dscanner).
 
 
 CONFIGURATION                                          *dutyl-configuration*
@@ -115,8 +116,12 @@ with that symbol.
 
 JUMP-TO-DECLARATION                              *dutyl-jump-to-declaration*
 
-Jumping to declaration requires DCD(see |dutyl-dcd-server|) and either DUB or
-a config file.
+Jumping to declaration either DCD(see |dutyl-dcd-server|) or Dscanner and
+either DUB or a config file.
 
 Place the cursor on a symbol and run *:DUjump* to jump to the declaration of
 that symbol.
+
+You can also send the symbol you are looking for as an argument to :DUjump. In
+that case, DCD will be ignored and only Dscanner can be used for the
+searching.

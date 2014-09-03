@@ -4,7 +4,7 @@ function! dutyl#dcd#new() abort
         return {}
     endif
 
-    let l:result={1:2}
+    let l:result={}
     let l:result=extend(l:result,s:functions)
     return l:result
 endfunction
