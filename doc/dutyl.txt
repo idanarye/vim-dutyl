@@ -4,7 +4,7 @@
 Author:  Idan Arye <https://github.com/idanarye/>
 License: Same terms as Vim itself (see |license|)
 
-Version: 1.1.0
+Version: 1.1.0+
 
 INTRODUCTION                                                         *dutyl*
 
@@ -125,3 +125,11 @@ that symbol.
 You can also send the symbol you are looking for as an argument to :DUjump. In
 that case, DCD will be ignored and only Dscanner can be used for the
 searching.
+
+Using bang(:DUjump!) will force Dutyl to ignore the context and jump by text
+only. This will use Dscanner, which might slow down the process, but is useful
+when DCD can't track the declaration from the place where it is used.
+
+*:DUsjump* and *:DUvjump* split the window horizontally or vertically before
+they jump. They will not split the window when Dutyl can't find the symbol or
+when the user canceled the search.

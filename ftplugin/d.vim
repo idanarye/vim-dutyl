@@ -1,9 +1,6 @@
 setlocal omnifunc=dutyl#dComplete
 
 command! -buffer DUddoc call dutyl#displayDDocForSymbolUnderCursor()
-command! -buffer -nargs=? DUjump 
-      \if empty(<q-args>)
-      \|call dutyl#jumpToDeclarationOfSymbolUnderCursor()
-      \|else
-      \|call dutyl#jumpToDeclarationOfSymbol(<q-args>)
-      \|endif
+command! -bang -buffer -nargs=? DUjump call dutyl#jumpToDeclarationOfSymbol(empty(<q-args>) ? <bang>0 : <q-args>,'')
+command! -bang -buffer -nargs=? DUsjump call dutyl#jumpToDeclarationOfSymbol(empty(<q-args>) ? <bang>0 : <q-args>,'s')
+command! -bang -buffer -nargs=? DUvjump call dutyl#jumpToDeclarationOfSymbol(empty(<q-args>) ? <bang>0 : <q-args>,'v')

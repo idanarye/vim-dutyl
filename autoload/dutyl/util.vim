@@ -35,3 +35,11 @@ function! dutyl#util#normalizeImportPaths(paths) abort
     let l:result=uniq(l:result)
     return l:result
 endfunction
+
+function! dutyl#util#splitWindowBasedOnArgument(splitType)
+    if 's'==a:splitType
+        split
+    elseif 'v'==a:splitType
+        vsplit
+    endif
+endfunction
