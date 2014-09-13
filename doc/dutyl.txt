@@ -22,6 +22,7 @@ Currently supported features:
 * Autocompletion using DCD
 * Finding DDoc using DCD
 * Finding declarations using DCD or Dscanner
+* Syntax and style checks using Dscanner
 
 
 REQUIREMENTS                                            *dutyl-requirements*
@@ -133,3 +134,28 @@ when DCD can't track the declaration from the place where it is used.
 *:DUsjump* and *:DUvjump* split the window horizontally or vertically before
 they jump. They will not split the window when Dutyl can't find the symbol or
 when the user canceled the search.
+
+
+SYNTAX-AND-STYLE-CHECKS                                  *dutyl-style-check*
+
+Syntax and style checks requires Dscanner.
+
+Use *:DUsyntaxCheck* to run a syntax check and store the results in the
+quickfix list.
+
+Use *:DUlsyntaxCheck* to run a syntax check and store the results in the
+location list.
+
+Use *:DUstyleCheck* to run a style check and store the results in the quickfix
+list.
+
+Use *:DUlstyleCheck* to run a style check and store the results in the
+location list.
+
+All these commands accept as arguments file names to perform the check on. If
+no file name is given, the tool will decide which files to check. In case of
+Dscanner(currently the only tool that does these checks) it'll use all the D
+files in the working directory and it's sub-directories.
+
+All these commands will jump to the first syntax/style error/warning - unless
+invoked with a bang(eg. :DUsyntaxCheck!).

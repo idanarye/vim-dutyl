@@ -33,7 +33,7 @@ function! s:functions.importPaths() dict abort
         endfor
     endfor
 
-    return dutyl#util#normalizeImportPaths(l:result)
+    return dutyl#util#normalizePaths(l:result)
 endfunction
 
 "Calls 'dub describe' and turns the result to Vim's data types

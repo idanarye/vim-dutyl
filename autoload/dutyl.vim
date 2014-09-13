@@ -117,3 +117,31 @@ function! dutyl#jumpToDeclarationOfSymbol(symbol,splitType) abort
         endif
     endif
 endfunction
+
+"Runs a syntax check and sets the quickfix or the location list to it's
+"results. Arguments:
+" - files: a list of files to include in the syntax check. Send an empty list
+"   to let the tool decide which files to take
+" - targetList: 'c'/'q' for the quickfix list, 'l' for the location list
+" - jump: nonzero value to automatically jump to the first entry
+function! dutyl#syntaxCheck(files,targetList,jump)
+    let l:dutyl=dutyl#core#requireFunctions('syntaxCheck')
+    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.files=a:files
+    let l:checkResult=l:dutyl.syntaxCheck(l:args)
+    call dutyl#util#setQuickfixOrLocationList(l:checkResult,a:targetList,a:jump)
+endfunction
+
+"Runs a style check and sets the quickfix or the location list to it's
+"results. Arguments:
+" - files: a list of files to include in the style check. Send an empty list
+"   to let the tool decide which files to take
+" - targetList: 'c'/'q' for the quickfix list, 'l' for the location list
+" - jump: nonzero value to automatically jump to the first entry
+function! dutyl#styleCheck(files,targetList,jump)
+    let l:dutyl=dutyl#core#requireFunctions('styleCheck')
+    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.files=a:files
+    let l:checkResult=l:dutyl.styleCheck(l:args)
+    call dutyl#util#setQuickfixOrLocationList(l:checkResult,a:targetList,a:jump)
+endfunction

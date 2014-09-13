@@ -28,7 +28,7 @@ endfunction
 
 "Convert a list of paths and path patterns to a list of absolute, concrete
 "paths without the last path separator.
-function! dutyl#util#normalizeImportPaths(paths) abort
+function! dutyl#util#normalizePaths(paths) abort
     let l:result=dutyl#util#globPaths(a:paths)
     let l:result=map(l:result,'fnamemodify(v:val,":p")')
     let l:result=map(l:result,'dutyl#util#cleanPathFromLastCharacterIfPathSeparator(v:val)')
@@ -36,10 +36,41 @@ function! dutyl#util#normalizeImportPaths(paths) abort
     return l:result
 endfunction
 
+"Use with argument 's' to split the window horizontally or with 'v' to split
+"vertically.
 function! dutyl#util#splitWindowBasedOnArgument(splitType)
     if 's'==a:splitType
         split
     elseif 'v'==a:splitType
         vsplit
+    endif
+endfunction
+
+"Split based on any newline character.
+function! dutyl#util#splitLines(text) abort
+    if type([])==type(a:text)
+        return a:text
+    elseif type('')==type(a:text)
+        return split(a:text,'\v\r\n|\n|\r')
+    endif
+endfunction
+
+"Exactly what it says on the tin. Arguments:
+" - newItems: a list in the same format as the one you send to
+"   setqflist/setloclist
+" - targetList: 'c'/'q' for the quickfix list, 'l' for the location list
+" - jump: nonzero value to automatically jump to the first entry
+function! dutyl#util#setQuickfixOrLocationList(newItems,targetList,jump) abort
+    if 'c'==a:targetList || 'q'==a:targetList
+        call setqflist(a:newItems)
+    elseif 'l'==a:targetList
+        call setloclist(0,a:newItems)
+    endif
+    if a:jump && !empty(a:newItems)
+        if 'c'==a:targetList || 'q'==a:targetList
+            cc 1
+        elseif 'l'==a:targetList
+            ll 1
+        endif
     endif
 endfunction

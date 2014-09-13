@@ -15,6 +15,7 @@ Currently supported features:
 * Autocompletion using DCD
 * Finding DDoc using DCD
 * Finding declarations using DCD or Dscanner
+* Syntax and style checks using Dscanner
 
 
 REQUIREMENTS

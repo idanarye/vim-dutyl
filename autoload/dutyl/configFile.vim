@@ -11,7 +11,7 @@ let s:functions={}
 function! s:functions.importPaths() dict abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
     let l:result=extend(l:result,s:readConfigFile().importPaths)
-    let l:result=dutyl#util#normalizeImportPaths(l:result)
+    let l:result=dutyl#util#normalizePaths(l:result)
     return l:result
 endfunction
 

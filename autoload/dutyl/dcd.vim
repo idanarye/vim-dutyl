@@ -56,7 +56,7 @@ function! s:functions.complete(args) abort
     let l:scanResult=s:runDCDToGetAutocompletion(a:args.bufferLines,a:args.bytePos)
 
     "Split the result text to lines.
-    let resultLines=split(l:scanResult,"\n")
+    let resultLines=dutyl#util#splitLines(l:scanResult)
 
     "if we have less than one line - something wen wrong
     if empty(resultLines)
@@ -79,7 +79,7 @@ function! s:functions.ddocForSymobolInBuffer(args) abort
     "Run DCD
     let l:scanResult=s:runDCDOnBufferBytePosition(a:args.bufferLines,a:args.bytePos,['--doc'])
     let l:result=[]
-    for l:ddoc in split(l:scanResult,'\r\n\|\n\|\r')
+    for l:ddoc in dutyl#util#splitLines(l:scanResult)
 	let l:ddoc=substitute(l:ddoc,'\\n',"\n",'g')
 	let l:ddoc=substitute(l:ddoc,'\\\\',"\\",'g')
 	call add(l:result,l:ddoc)
@@ -98,7 +98,7 @@ function! s:functions.declarationsOfSymbolInBuffer(args) abort
 	return []
     endif
     let l:result=[]
-    for l:resultLine in split(l:scanResult,'\r\n\|\n\|\r')
+    for l:resultLine in dutyl#util#splitLines(l:scanResult)
 	let l:lineParts=split(l:resultLine,"\t")
 	let l:bytePos=str2nr(l:lineParts[1])
 	if l:lineParts[0]=='stdin'
