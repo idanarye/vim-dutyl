@@ -78,7 +78,7 @@ endfunction
 "Exactly what it says on the tin
 function! dutyl#util#unique(list) abort
     if exists('*uniq') "Use built-in uniq if possible
-        return uniq(a:list)
+        return uniq(sort(a:list))
     endif
     if empty(a:list)
         return []
