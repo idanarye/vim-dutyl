@@ -32,7 +32,7 @@ function! dutyl#util#normalizePaths(paths) abort
     let l:result=dutyl#util#globPaths(a:paths)
     let l:result=map(l:result,'fnamemodify(v:val,":p")')
     let l:result=map(l:result,'dutyl#util#cleanPathFromLastCharacterIfPathSeparator(v:val)')
-    let l:result=uniq(l:result)
+    let l:result=dutyl#util#unique(l:result)
     return l:result
 endfunction
 
@@ -73,4 +73,19 @@ function! dutyl#util#setQuickfixOrLocationList(newItems,targetList,jump) abort
             ll 1
         endif
     endif
+endfunction
+
+"Exactly what it says on the tin
+function! dutyl#util#unique(list) abort
+    if empty(a:list)
+        return []
+    endif
+    let l:sorted=sort(a:list)
+    let l:result=[l:sorted[0]]
+    for l:entry in l:sorted[1:]
+        if l:entry!=l:result[-1]
+            call add(l:result,l:entry)
+        endif
+    endfor
+    return l:result
 endfunction
