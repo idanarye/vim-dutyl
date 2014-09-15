@@ -184,7 +184,7 @@ function! dutyl#core#bytePosition(...) abort
     let l:oldFileFormat=&fileformat
     try
         set fileformat=unix
-        return line2byte(l:line)+l:column
+        return line2byte(l:line)+l:column-1
     finally
         let &fileformat=l:oldFileFormat
     endtry
