@@ -16,6 +16,7 @@ Currently supported features:
 * Finding DDoc using DCD
 * Finding declarations using DCD or Dscanner
 * Syntax and style checks using Dscanner
+* Updating the tags file using Dscanner
 
 
 REQUIREMENTS
@@ -62,3 +63,11 @@ ran. To prevent using VimProc, set `g:dutyl_dontUseVimProc` to 1:
 ```vim
 let g:dutyl_dontUseVimProc=1
 ```
+
+Dutyl will use a local file named "tags" for tags. If you want to everride
+this, set `g:dutyl_tagsFileName` to the name of the new tags file:
+```vim
+let g:dutyl_tagsFileName='newnamefortagsfile'
+```
+Note that the new tags file name will still have to be in `tags` in order
+for Vim to recognize it.

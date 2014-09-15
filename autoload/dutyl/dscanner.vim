@@ -61,6 +61,18 @@ function! s:functions.styleCheck(args) abort
     return l:result
 endfunction
 
+"Retrieve ctags lines for the files specified in args.files. If args.files is
+"blank, let Dscanner decide the files to scan.
+function! s:functions.generateCTags(args) abort
+    if has_key(a:args,'files')
+	let l:files=dutyl#util#normalizePaths(a:args.files)
+	let l:rawResult=dutyl#core#runTool('dscanner',['--ctags']+l:files)
+    else
+	let l:rawResult=dutyl#core#runTool('dscanner',['--ctags'])
+    endif
+    return dutyl#util#splitLines(l:rawResult)
+endfunction
+
 "Parse Dscanner's syntax and style check results
 function! s:parseDscannerCheckResults(rawResult) abort
     let l:result=[]

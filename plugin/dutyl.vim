@@ -15,6 +15,8 @@ command! -nargs=* -bang -complete=file DUlsyntaxCheck call dutyl#syntaxCheck([<f
 command! -nargs=* -bang -complete=file DUstyleCheck call dutyl#styleCheck([<f-args>],'c',<bang>1)
 command! -nargs=* -bang -complete=file DUlstyleCheck call dutyl#styleCheck([<f-args>],'l',<bang>1)
 
+command! -nargs=* -complete=file DUupdateCTags call dutyl#updateCTags([<f-args>])
+
 call dutyl#register#module('dub','dutyl#dub#new',0)
 call dutyl#register#module('dcd','dutyl#dcd#new',20)
 call dutyl#register#module('dscanner','dutyl#dscanner#new',60)
