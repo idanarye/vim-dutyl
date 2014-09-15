@@ -100,7 +100,7 @@ function! dutyl#jumpToDeclarationOfSymbol(symbol,splitType) abort
         echo 'Unable to find declaration for symbol `'.l:args.symbol.'`'
     elseif 1==len(l:declarationLocations)
         call dutyl#util#splitWindowBasedOnArgument(a:splitType)
-        call dutyl#core#jumpToPosition(l:declarationLocations[0])
+        call dutyl#core#jumpToPositionPushToTagStack(l:declarationLocations[0])
     else
         let l:options=['Multiple declarations found:']
         for l:i in range(len(l:declarationLocations))
@@ -113,7 +113,7 @@ function! dutyl#jumpToDeclarationOfSymbol(symbol,splitType) abort
         let l:selectedLocationIndex=inputlist(l:options)
         if 0<l:selectedLocationIndex && l:selectedLocationIndex<=len(l:declarationLocations)
             call dutyl#util#splitWindowBasedOnArgument(a:splitType)
-            call dutyl#core#jumpToPosition(l:declarationLocations[l:selectedLocationIndex-1])
+            call dutyl#core#jumpToPositionPushToTagStack(l:declarationLocations[l:selectedLocationIndex-1])
         endif
     endif
 endfunction

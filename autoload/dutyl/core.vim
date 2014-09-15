@@ -252,6 +252,24 @@ function! dutyl#core#jumpToPosition(args) abort
     endif
 endfunction
 
+"Like dutyl#core#jumpToPosition, but also pushes to the tag stack
+function! dutyl#core#jumpToPositionPushToTagStack(args) abort
+    "based on http://vim.1045645.n5.nabble.com/Modifying-the-tag-stack-tp1158229p1158240.html
+    let l:tmpTagsFile=tempname()
+    let l:tagName='dutyl_tag_'.localtime()
+    let l:file=fnamemodify(get(a:args,'file',expand('%')),':p')
+    let l:oldTags=&tags
+    try
+        call writefile([l:tagName."\t".l:file."\t0"],l:tmpTagsFile)
+        let &tags=l:tmpTagsFile
+        execute 'tag '.l:tagName
+        call dutyl#core#jumpToPosition(a:args)
+    finally
+        let &tags=l:oldTags
+        call delete(l:tmpTagsFile)
+    endtry
+endfunction
+
 "Gather the arguments commonly used by the various operations. Extract as many
 "common arguments as possible from the supplied dutyl object.
 function! dutyl#core#gatherCommonArguments(dutyl) abort
