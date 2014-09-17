@@ -42,6 +42,9 @@ function! s:editStringListField(stringListFieldName) abort
     "Not setting &buftype to nofile, since we DO need to be able to save the
     "buffer. BufWriteCmd prevents it from being saved to the system
     setlocal bufhidden=wipe
+    "Disabling swapfile for this buffer since it's filename can have illegal
+    "characters (e.g. on Windows)
+    setlocal noswapfile
     setlocal nonumber
     setlocal norelativenumber
     execute 'silent file :dutyl:configFile:'.a:stringListFieldName
