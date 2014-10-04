@@ -90,12 +90,12 @@ endfunction
 "Retrieve declaration location from DCD
 function! s:functions.declarationsOfSymbolInBuffer(args) abort
     "Register the import paths:
-    "call s:registerImportPaths(a:args.importPaths)
+    call s:registerImportPaths(a:args.importPaths)
 
     "Run DCD
     let l:scanResult=s:runDCDOnBufferBytePosition(a:args.bufferLines,a:args.bytePos,['--symbolLocation'])
     if l:scanResult=~'\v^Not found'
-	return []
+	return s:functions.declarationsOfSymbol(a:args)
     endif
     let l:result=[]
     for l:resultLine in dutyl#util#splitLines(l:scanResult)
@@ -107,7 +107,35 @@ function! s:functions.declarationsOfSymbolInBuffer(args) abort
 	    call add(l:result,dutyl#core#bytePosition2rowAndColumnAnotherFile(l:lineParts[0],l:bytePos))
 	end
     endfor
-    return l:result
+    return dutyl#util#unique(l:result)
+endfunction
+
+"Retrieve declaration location from DCD based on name only
+function! s:functions.declarationsOfSymbol(args) abort
+    "Register the import paths:
+    call s:registerImportPaths(a:args.importPaths)
+    let l:currentFileName = expand('%:p')
+
+    "Run DCD
+    let l:scanResult=s:runDCDOnBuffer(a:args.bufferLines,['--search',a:args.symbol])
+    if l:scanResult=~'\v^Not found'
+	return []
+    endif
+    let l:result=[]
+    for l:resultLine in dutyl#util#splitLines(l:scanResult)
+	let l:lineParts=split(l:resultLine,"\t")
+	let l:bytePos=str2nr(l:lineParts[2])
+	if l:lineParts[0]=='stdin'
+	    if empty(l:currentFileName)
+		call add(l:result,dutyl#core#bytePosition2rowAndColumnCurrentBuffer(l:bytePos))
+	    else
+	    call add(l:result,dutyl#core#bytePosition2rowAndColumnAnotherFile(l:currentFileName,l:bytePos))
+	    endif
+	else
+	    call add(l:result,dutyl#core#bytePosition2rowAndColumnAnotherFile(l:lineParts[0],l:bytePos))
+	end
+    endfor
+    return dutyl#util#unique(l:result)
 endfunction
 
 
@@ -118,7 +146,12 @@ endfunction
 
 "Run DCD on the current buffer with the supplied position
 function! s:runDCDOnBufferBytePosition(bufferLines,bytePosition,args) abort
-    let l:scanResult=dutyl#core#runTool('dcd-client',a:args+['--cursorPos='.a:bytePosition],join(a:bufferLines,"\n"))
+    return s:runDCDOnBuffer(a:bufferLines,a:args+['--cursorPos='.a:bytePosition])
+endfunction
+
+"Run DCD on the current buffer
+function! s:runDCDOnBuffer(bufferLines,args) abort
+    let l:scanResult=dutyl#core#runTool('dcd-client',a:args,join(a:bufferLines,"\n"))
     if v:shell_error
 	throw l:scanResult
     endif

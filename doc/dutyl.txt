@@ -4,7 +4,7 @@
 Author:  Idan Arye <https://github.com/idanarye/>
 License: Same terms as Vim itself (see |license|)
 
-Version: 1.3.1
+Version: 1.3.1+
 
 INTRODUCTION                                                         *dutyl*
 
@@ -131,13 +131,11 @@ either DUB or a config file.
 Place the cursor on a symbol and run *:DUjump* to jump to the declaration of
 that symbol.
 
-You can also send the symbol you are looking for as an argument to :DUjump. In
-that case, DCD will be ignored and only Dscanner can be used for the
-searching.
+You can also send the symbol you are looking for as an argument to :DUjump.
 
 Using bang(:DUjump!) will force Dutyl to ignore the context and jump by text
-only. This will use Dscanner, which might slow down the process, but is useful
-when DCD can't track the declaration from the place where it is used.
+only. This will yield less accurately filtered results, but is useful when DCD
+can't track the declaration from the place where it is used.
 
 *:DUsjump* and *:DUvjump* split the window horizontally or vertically before
 they jump. They will not split the window when Dutyl can't find the symbol or

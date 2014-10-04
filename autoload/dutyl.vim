@@ -106,7 +106,7 @@ function! dutyl#jumpToDeclarationOfSymbol(symbol,splitType) abort
         for l:i in range(len(l:declarationLocations))
             call add(l:options,printf('%i) %s(%s:%s)',
                         \l:i+1,
-                        \l:declarationLocations[i].file,
+                        \get(l:declarationLocations[i],'file','current file'),
                         \l:declarationLocations[i].line,
                         \l:declarationLocations[i].column))
         endfor
