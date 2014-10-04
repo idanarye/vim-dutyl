@@ -33,6 +33,10 @@ function! dutyl#dcd#stopServer() abort
     call dutyl#core#runToolInBackground('dcd-client','--shutdown')
 endfunction
 
+function! dutyl#dcd#clearCache() abort
+    call dutyl#core#runToolInBackground('dcd-client','--clearCache')
+endfunction
+
 let s:functions={}
 
 "DCD's checkFunction should also check if the DCD server is running

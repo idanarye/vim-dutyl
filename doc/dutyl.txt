@@ -76,7 +76,9 @@ for Vim to recognize it.
 DCD SERVER                                                *dutyl-dcd-server*
 
 Dutyl can not use DCD if the DCD server is not running. To start the DCD
-server, use *:DUDCDstartServer*. To stop it, use *:DUDCDstopServer*
+server, use *:DUDCDstartServer*. To stop it, use *:DUDCDstopServer*. To
+restart it, use *:DUDCDrestartServer*. To clear the cache, use
+*:DUDCDclearCache*.
 
 
 CONFIG FILE                                              *dutyl-config-file*
