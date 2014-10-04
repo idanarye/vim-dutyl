@@ -102,7 +102,7 @@ function! dutyl#util#globInParentDirectories(patterns) abort
         let l:patterns=[a:patterns]
     endif
     while 1
-        let l:matches=filter(map(copy(l:patterns),'globpath(l:path,v:val,1,1)'),'!empty(v:val)')
+        let l:matches=filter(map(copy(l:patterns),'dutyl#util#splitLines(globpath(l:path,v:val,1))'),'!empty(v:val)')
         if !empty(l:matches)
             let l:result=[]
             for l:match in l:matches
