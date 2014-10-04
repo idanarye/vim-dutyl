@@ -92,3 +92,45 @@ function! dutyl#util#unique(list) abort
     endfor
     return l:result
 endfunction
+
+"Look for glob patterns up in the directory tree
+function! dutyl#util#globInParentDirectories(patterns) abort
+    let l:path=getcwd()
+    if type([])==type(a:patterns)
+        let l:patterns=a:patterns
+    else
+        let l:patterns=[a:patterns]
+    endif
+    while 1
+        let l:matches=filter(map(copy(l:patterns),'globpath(l:path,v:val,1,1)'),'!empty(v:val)')
+        if !empty(l:matches)
+            let l:result=[]
+            for l:match in l:matches
+                let l:result+=l:match
+            endfor
+            return l:result
+        endif
+        let l:newPath=fnamemodify(l:path,':h')
+        if len(l:path)<=len(l:newPath)
+            return []
+        endif
+        let l:path=l:newPath
+    endwhile
+    return l:path
+endfunction
+
+"lcd to the directory, run the function or command, and return to the current
+"directory
+function! dutyl#util#runInDirectory(directory,action,...) abort
+    let l:cwd=getcwd()
+    try
+        execute 'lcd '.a:directory
+        if type(function('tr'))==type(a:action)
+            return call(a:action,a:000)
+        elseif type('')==type(a:action)
+            execute a:action
+        endif
+    finally
+        execute 'lcd '.l:cwd
+    endtry
+endfunction

@@ -1,6 +1,5 @@
 function! dutyl#dub#new() abort
-    if !filereadable('dub.json')
-                \&& !filereadable('package.json')
+    if empty(s:functions.projectRoot())
         return {}
     endif
     if !dutyl#core#toolExecutable('dub')
@@ -13,6 +12,15 @@ function! dutyl#dub#new() abort
 endfunction
 
 let s:functions={}
+
+function! s:functions.projectRoot() abort
+    let l:dubFileMatches=dutyl#util#globInParentDirectories(['dub.json','package.json'])
+    if empty(l:dubFileMatches)
+        return ''
+    else
+        return fnamemodify(l:dubFileMatches[0],':h')
+    endif
+endfunction
 
 "Return all the import paths DCD knows about, plus the ones in
 "g:dutyl_stdImportPaths
@@ -38,8 +46,8 @@ endfunction
 
 "Calls 'dub describe' and turns the result to Vim's data types
 function! s:dubDescribe() abort
-    "let l:result=system('dub describe')
-    let l:result=dutyl#core#runTool('dub',['describe','--annotate'])
+    let l:result=dutyl#util#runInDirectory(s:functions.projectRoot(),
+                \function('dutyl#core#runTool'),'dub',['describe','--annotate'])
     if !empty(dutyl#core#shellReturnCode())
         throw 'Failed to execute `dub describe`'
     endif

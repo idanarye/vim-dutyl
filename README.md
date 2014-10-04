@@ -17,6 +17,7 @@ Currently supported features:
 * Finding declarations using DCD or Dscanner
 * Syntax and style checks using Dscanner
 * Updating the tags file using Dscanner
+* Recognizing the project's root and running commands there
 
 
 REQUIREMENTS

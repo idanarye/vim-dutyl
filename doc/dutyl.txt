@@ -24,6 +24,7 @@ Currently supported features:
 * Finding declarations using DCD or Dscanner
 * Syntax and style checks using Dscanner
 * Updating the tags file using Dscanner
+* Recognizing the project's root and running commands there
 
 
 REQUIREMENTS                                            *dutyl-requirements*
@@ -106,6 +107,14 @@ to automatically figure out the import paths.
 Note: If the project file is badly formatted(rejected by DUB), or if contains
 dependencies that have not yet been downloaded by DUB, Dutyl's call to DUB
 will fail and it won't be able to get the import paths.
+
+
+PROJECT ROOT                                            *dutyl-project-root*
+
+Dutyl knows about the project's root - either from DUB or from the config file
+location. You can get the project's root with the *dutyl#projectRoot()*
+function. You can run any Vim command in the project's root with *:DUexecute*.
+:DUexecute! can be used to run shell commands(sugar for "DUexecute !").
 
 
 AUTOCOMPLETE                                            *dutyl-autocomplete*

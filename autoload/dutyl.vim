@@ -176,3 +176,25 @@ function! dutyl#updateCTags(paths) abort
     endif
     call writefile(l:tagList,l:tagsFile)
 endfunction
+
+"Return the project's root
+function! dutyl#projectRoot() abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('projectRoot')
+    catch
+        echoerr 'Unable to find project root: '.v:exception
+        return
+    endtry
+    return l:dutyl.projectRoot()
+endfunction
+
+"Runs a command in the project's root
+function! dutyl#runInProjectRoot(command) abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('projectRoot')
+    catch
+        echoerr 'Unable to find project root: '.v:exception
+        return
+    endtry
+    call dutyl#util#runInDirectory(l:dutyl.projectRoot(),a:command)
+endfunction

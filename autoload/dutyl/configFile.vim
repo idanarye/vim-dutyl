@@ -8,11 +8,33 @@ endfunction
 
 let s:functions={}
 
-function! s:functions.importPaths() dict abort
+function! s:functions.projectRoot() abort
+    let l:configFileMatches=dutyl#util#globInParentDirectories(s:CONFIG_FILE_NAME)
+    if empty(l:configFileMatches)
+        return ''
+    else
+        return fnamemodify(l:configFileMatches[0],':h')
+    endif
+endfunction
+
+function! s:functions.importPaths() abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
     let l:result=extend(l:result,s:readConfigFile().importPaths)
     let l:result=dutyl#util#normalizePaths(l:result)
     return l:result
+endfunction
+
+function! s:configFilePath(emptyIfNotExist) abort
+    let l:configFileMatches=dutyl#util#globInParentDirectories(s:CONFIG_FILE_NAME)
+    if empty(l:configFileMatches)
+        if a:emptyIfNotExist
+            return ''
+        else
+            return s:CONFIG_FILE_NAME
+        endif
+    else
+        return l:configFileMatches[0]
+    endif
 endfunction
 
 "Return a Vim Dictionary of the configuration in the configuration file
@@ -20,8 +42,8 @@ function! s:readConfigFile() abort
     let l:result={
                 \'importPaths':[],
                 \}
-    if !empty(glob(s:CONFIG_FILE_NAME,1))
-        let l:result=extend(l:result,eval(join(readfile(s:CONFIG_FILE_NAME),"\n")))
+    if !empty(s:configFilePath(1))
+        let l:result=extend(l:result,eval(join(readfile(s:configFilePath(1)),"\n")))
     endif
 
     return l:result
@@ -29,7 +51,7 @@ endfunction
 
 "Write a Vim Dictionary to the configuration file
 function! s:writeConfigFile(config) abort
-    call writefile(split(string(a:config),"\n"),s:CONFIG_FILE_NAME)
+    call writefile(split(string(a:config),"\n"),s:configFilePath(0))
 endfunction
 
 "Open a buffer for editing a single configuration field

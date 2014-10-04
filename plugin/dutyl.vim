@@ -1,5 +1,7 @@
 command! DUreinit call dutyl#core#instance(1)
 
+command! -nargs=1 -bang DUexecute call dutyl#runInProjectRoot('<bang>'.<q-args>)
+
 command! DUConfigFileEditImportPaths call dutyl#configFile#editImportPaths()
 
 command! DUDCDstartServer call dutyl#dcd#startServer()
