@@ -232,10 +232,7 @@ endfunction
 function! dutyl#core#jumpToPosition(args) abort
     if has_key(a:args,'file')
         let l:bufnr=bufnr(a:args.file)
-        let l:winnr=bufwinnr(l:bufnr)
-        if 0<=l:winnr
-            execute l:winnr.'wincmd w'
-        elseif 0<=l:bufnr
+        if 0<=l:bufnr
             execute 'buffer '.l:bufnr
         else
             execute 'edit '.a:args.file
