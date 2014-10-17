@@ -4,7 +4,7 @@
 Author:  Idan Arye <https://github.com/idanarye/>
 License: Same terms as Vim itself (see |license|)
 
-Version: 1.4.1
+Version: 1.4.1+
 
 INTRODUCTION                                                         *dutyl*
 
@@ -72,6 +72,16 @@ this, set *g:dutyl_tagsFileName* to the name of the new tags file: >
 <
 Note that the new tags file name will still have to be in |'tags'| in order
 for Vim to recognize it.
+
+
+COMPATIBILITY                                          *dutyl-compatibility*
+
+If you are using a version of DCD older than 0.3.0(that includes the
+0.3.0-beta versions), DCD's --query flag won't work so you need to set
+*g:dutyl_dcd_assumeServerIsRunning* to 1: >
+    let g:dutyl_dcd_assumeServerIsRunning=1
+<
+Note that this will prevent using Dscanner for finding declaration locations.
 
 
 DCD SERVER                                                *dutyl-dcd-server*

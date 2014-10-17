@@ -44,6 +44,9 @@ function! s:functions.checkFunction(functionName) dict abort
     if !has_key(self,a:functionName)
 	return 1
     endif
+    if exists('g:dutyl_dcd_assumeServerIsRunning') && g:dutyl_dcd_assumeServerIsRunning
+	return 0
+    endif
     call dutyl#core#runTool('dcd-client','--query')
     if 0!=dutyl#core#shellReturnCode()
 	return 'DCD server not running'
