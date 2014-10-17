@@ -102,18 +102,12 @@ function! dutyl#jumpToDeclarationOfSymbol(symbol,splitType) abort
         call dutyl#util#splitWindowBasedOnArgument(a:splitType)
         call dutyl#core#jumpToPositionPushToTagStack(l:declarationLocations[0])
     else
-        let l:options=['Multiple declarations found:']
-        for l:i in range(len(l:declarationLocations))
-            call add(l:options,printf('%i) %s(%s:%s)',
-                        \l:i+1,
-                        \get(l:declarationLocations[i],'file','current file'),
-                        \l:declarationLocations[i].line,
-                        \l:declarationLocations[i].column))
-        endfor
-        let l:selectedLocationIndex=inputlist(l:options)
-        if 0<l:selectedLocationIndex && l:selectedLocationIndex<=len(l:declarationLocations)
+        let l:selectedLocationIndex=dutyl#util#inputList('Multiple declarations found:',
+                    \map(copy(l:declarationLocations),'printf("%s(%s:%s)",get(v:val,"file","current file"),v:val.line,v:val.column)'),
+                    \'*MORE*')
+        if 0<=l:selectedLocationIndex
             call dutyl#util#splitWindowBasedOnArgument(a:splitType)
-            call dutyl#core#jumpToPositionPushToTagStack(l:declarationLocations[l:selectedLocationIndex-1])
+            call dutyl#core#jumpToPositionPushToTagStack(l:declarationLocations[l:selectedLocationIndex])
         endif
     endif
 endfunction
