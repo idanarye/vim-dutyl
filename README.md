@@ -26,8 +26,9 @@ REQUIREMENTS
 Dutyl requires the tools that it uses. If you want it to use DUB to get info
 about the project, you need [DUB](http://code.dlang.org/download). If you want
 it to use DCD for autocompletion, you need
-[DCD](https://github.com/Hackerpilot/DCD).  If you want it to use Dscanner, you
-need [Dscanner](https://github.com/Hackerpilot/Dscanner).
+[DCD](https://github.com/Hackerpilot/DCD)(currently tested with version 0.4.0).
+If you want it to use Dscanner, you need
+[Dscanner](https://github.com/Hackerpilot/Dscanner).
 
 
 CONFIGURATION
