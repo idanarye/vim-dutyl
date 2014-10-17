@@ -20,7 +20,7 @@ endfunction
 function! s:functions.importPaths() abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
     let l:result=extend(l:result,s:readConfigFile().importPaths)
-    let l:result=dutyl#util#normalizePaths(l:result)
+    let l:result=dutyl#util#runInDirectory(s:functions.projectRoot(),function('dutyl#util#normalizePaths'),l:result)
     return l:result
 endfunction
 
