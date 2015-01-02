@@ -13,8 +13,10 @@ endfunction
 
 let s:functions={}
 
+let s:DEFINING_FILES = ['dub.json', 'package.json', 'dub.selections.json']
+
 function! s:functions.projectRoot() abort
-    let l:dubFileMatches=dutyl#util#globInParentDirectories(['dub.json','package.json'])
+    let l:dubFileMatches=dutyl#util#globInParentDirectories(s:DEFINING_FILES)
     if empty(l:dubFileMatches)
         return ''
     else
@@ -26,6 +28,18 @@ endfunction
 "g:dutyl_stdImportPaths
 function! s:functions.importPaths() dict abort
     let l:result=exists('g:dutyl_stdImportPaths') ? copy(g:dutyl_stdImportPaths) : []
+
+    let l:definingFiles = dutyl#util#globInParentDirectories(s:DEFINING_FILES)
+    let l:definingFilesModificationTime = {}
+    for l:file in l:definingFiles
+        let l:definingFilesModificationTime[l:file] = getftime(l:file)
+    endfor
+
+    if has_key(self.cache.dub, 'definingFilesModificationTime')
+        if self.cache.dub.definingFilesModificationTime == l:definingFilesModificationTime
+            return self.cache.dub.importPaths
+        endif
+    endif
 
     let l:info=s:dubDescribe()
     for l:package in l:info.packages
@@ -41,7 +55,9 @@ function! s:functions.importPaths() dict abort
         endfor
     endfor
 
-    return dutyl#util#normalizePaths(l:result)
+    let self.cache.dub.importPaths = dutyl#util#normalizePaths(l:result)
+    let self.cache.dub.definingFilesModificationTime = l:definingFilesModificationTime
+    return self.cache.dub.importPaths
 endfunction
 
 "Calls 'dub describe' and turns the result to Vim's data types

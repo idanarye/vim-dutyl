@@ -13,22 +13,25 @@ endfunction
 
 "Create the base Dutyl object and load all modules to it
 function! dutyl#core#create() abort
-    let l:result={}
+    let l:result = {}
 
-    let l:modules=[]
+    let l:modules = []
+    let l:cache = {}
     for l:moduleDefinition in dutyl#register#list()
-        let l:module=function(l:moduleDefinition.constructor)()
+        let l:module = function(l:moduleDefinition.constructor)()
         if !empty(l:module) "Empty module = can not be used
-            let l:module.name=l:moduleDefinition.name
-            if !has_key(l:module,'checkFunction')
-                let l:module.checkFunction=function('s:checkFunction')
+            let l:module.name = l:moduleDefinition.name
+            if !has_key(l:module, 'checkFunction')
+                let l:module.checkFunction = function('s:checkFunction')
             endif
-            call add(l:modules,l:module)
+            call add(l:modules, l:module)
+            let l:cache[l:module.name] = {}
         endif
     endfor
 
-    let l:result.modules=l:modules
-    let l:result.requireFunctions=function('s:requireFunctions')
+    let l:result.modules = l:modules
+    let l:result.cache = l:cache
+    let l:result.requireFunctions = function('s:requireFunctions')
 
     return l:result
 endfunction
@@ -41,29 +44,28 @@ endfunction
 "Creates an object with the required functions from the modules, based on
 "module priority
 function! s:requireFunctions(...) dict abort
-    let l:result={'obj':self}
+    let l:result = {'obj': self, 'cache': self.cache}
     for l:functionName in a:000
         if exists('l:Function')
             unlet l:Function
         endif
-        let l:reasons=[]
+        let l:reasons = []
         for l:module in self.modules
             unlet! l:reason
-            let l:reason=l:module.checkFunction(l:functionName)
+            let l:reason = l:module.checkFunction(l:functionName)
             if empty(l:reason)
-                "let l:result[l:functionName]=l:module[l:functionName]
-                let l:Function=l:module[l:functionName]
+                let l:Function = l:module[l:functionName]
                 break
             elseif type('')==type(l:reason)
-                let l:reasons=add(l:reasons,l:reason)
+                let l:reasons = add(l:reasons,l:reason)
             endif
         endfor
         if exists('l:Function')
-            let l:result[l:functionName]=l:Function
+            let l:result[l:functionName] = l:Function
         else
-            let l:errorMessage='Function `'.l:functionName.'` is not supported by currently loaded Dutyl modules.'
+            let l:errorMessage = 'Function `' . l:functionName . '` is not supported by currently loaded Dutyl modules.'
             if !empty(l:reasons)
-                let l:errorMessage=l:errorMessage.' Possible reasons: '.join(l:reasons,', ')
+                let l:errorMessage = l:errorMessage.' Possible reasons: ' . join(l:reasons, ', ')
             endif
             throw l:errorMessage
         endif
