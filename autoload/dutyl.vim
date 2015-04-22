@@ -192,3 +192,24 @@ function! dutyl#runInProjectRoot(command) abort
     endtry
     call dutyl#util#runInDirectory(l:dutyl.projectRoot(),a:command)
 endfunction
+
+"Assign this to 'formatexpr'
+function! dutyl#formatExpressionInvoked() abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('formatCode')
+    catch
+        echoerr 'Unable to format code: '.v:exception
+        return
+    endtry
+    let l:origLines = getline(v:lnum, v:lnum + v:count - 1)
+    let l:formattedLines = l:dutyl.formatCode(l:origLines)
+
+    "Add/remove lines from the buffer to fit to the formatted lines
+    if v:count > len(l:formattedLines)
+        execute (v:lnum + len(l:formattedLines)).','.(v:lnum + v:count - 1) 'delete'
+    elseif v:count < len(l:formattedLines)
+        call append(v:lnum + v:count - 1, repeat([''], len(l:formattedLines) - v:count))
+    endif
+
+    call setline(v:lnum, l:formattedLines)
+endfunction

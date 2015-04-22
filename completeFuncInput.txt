@@ -1,0 +1,6 @@
+0
+
+	foo(
+0
+6
+['', {'word': 'x)', 'abbr': 'void foo(int x)', 'dup': 1}, {'word': 'x, y)', 'abbr': 'void foo(int x, int y)', 'dup': 1}]

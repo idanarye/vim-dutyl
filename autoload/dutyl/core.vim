@@ -161,6 +161,15 @@ function! dutyl#core#runTool(tool,args,...) abort
     return call(function('dutyl#core#system'),[s:createRunToolCommand(a:tool,a:args)]+a:000)
 endfunction
 
+function! dutyl#core#runToolIgnoreStderr(tool,args,...) abort
+    if has('win32')
+        let l:ignoreStderrSuffix = ' 2> nul'
+    else
+        let l:ignoreStderrSuffix = ' 2> /dev/null'
+    endif
+    return call(function('dutyl#core#system'),[s:createRunToolCommand(a:tool,a:args).l:ignoreStderrSuffix]+a:000)
+endfunction
+
 "Check if a tool is executable. If not - it can not be used
 function! dutyl#core#toolExecutable(tool) abort
     return executable(dutyl#register#getToolPath(a:tool))
