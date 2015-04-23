@@ -62,3 +62,52 @@ function! s:functions.formatCode(code) abort
     endif
     return l:result
 endfunction
+
+function! s:functions.calcIndentForLastLineOfCode(code) abort
+    if empty(a:code)
+        return -1
+    endif
+    if type(a:code) == type('')
+        let l:code = dutyl#util#splitLines(a:code)
+    else
+        let l:code = a:code
+    endif
+
+    let l:markBeforeLastLine = 'dutylmark'.localtime()
+    call insert(l:code, '//', -1)
+    call insert(l:code, '// '.l:markBeforeLastLine, -1)
+    call add(l:code, '//')
+    call add(l:code, 'foo();')
+    let l:lastLineLength = len(l:code[-1])
+
+    "This will not actually affect the brace style, we are only indenting here
+    "and can't break lines, but if the bracing style is allman and dfmt is
+    "configured to use one of the other bracing styles the opening brace will
+    "be indented weirdly.
+    let l:dfmtArgs = [
+                \'--brace_style', 'allman',
+                \]
+
+    let l:formattedCode = dutyl#util#splitLines(dutyl#core#runToolIgnoreStderr('dfmt', l:dfmtArgs, l:code))
+
+    "Find the mark we placed:
+    let l:lineIndex = len(l:formattedCode) - 1
+    while 0 <= l:lineIndex
+        let l:line = l:formattedCode[l:lineIndex]
+        if len(l:markBeforeLastLine) < len(l:line)
+            if l:line[-len(l:markBeforeLastLine) : -1] == l:markBeforeLastLine
+                break
+            endif
+        endif
+        let l:lineIndex -= 1
+    endwhile
+    if l:lineIndex < 0
+        return -1
+    endif
+    let l:lineIndex += 1
+    if empty(l:formattedCode[l:lineIndex])
+        let l:lineIndex += 1
+    endif
+
+    return strwidth(s:getIndentFrom(l:code)) - strwidth(s:getIndentFrom(l:formattedCode)) + strwidth(matchstr(l:formattedCode[l:lineIndex], '\v^\_s*\ze\S'))
+endfunction

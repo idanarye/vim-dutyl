@@ -213,3 +213,13 @@ function! dutyl#formatExpressionInvoked() abort
 
     call setline(v:lnum, l:formattedLines)
 endfunction
+
+function! dutyl#indentExpressionInvoked() abort
+    try
+        let l:dutyl=dutyl#core#requireFunctions('calcIndentForLastLineOfCode')
+    catch
+        echoerr 'Unable to indent code: '.v:exception
+        return
+    endtry
+    return l:dutyl.calcIndentForLastLineOfCode(getline(1, '.'))
+endfunction
