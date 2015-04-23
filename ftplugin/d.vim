@@ -1,2 +1,5 @@
 setlocal omnifunc=dutyl#dComplete
-setlocal formatexpr=dutyl#formatExpressionInvoked()
+
+if dutyl#register#toolExecutable('dfmt')
+    setlocal formatexpr=dutyl#formatExpressionInvoked()
+endif

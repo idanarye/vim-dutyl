@@ -1,5 +1,5 @@
 function! dutyl#dfmt#new() abort
-    if !dutyl#core#toolExecutable('dfmt')
+    if !dutyl#register#toolExecutable('dfmt')
         return {}
     endif
 

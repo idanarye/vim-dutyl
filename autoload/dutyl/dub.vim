@@ -2,7 +2,7 @@ function! dutyl#dub#new() abort
     if empty(s:functions.projectRoot())
         return {}
     endif
-    if !dutyl#core#toolExecutable('dub')
+    if !dutyl#register#toolExecutable('dub')
         return {}
     endif
 

@@ -172,7 +172,7 @@ endfunction
 
 "Check if a tool is executable. If not - it can not be used
 function! dutyl#core#toolExecutable(tool) abort
-    return executable(dutyl#register#getToolPath(a:tool))
+    return dutyl#register#toolExecutable(a:tool)
 endfunction
 
 "Run a tool in the background

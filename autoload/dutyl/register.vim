@@ -48,3 +48,8 @@ function! dutyl#register#list() abort
     let l:result=sort(l:result,function('s:sortModulesByPriority'))
     return l:result
 endfunction
+
+"Check if a tool is executable. If not - it can not be used
+function! dutyl#register#toolExecutable(tool) abort
+    return executable(dutyl#register#getToolPath(a:tool))
+endfunction

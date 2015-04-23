@@ -1,5 +1,5 @@
 function! dutyl#dscanner#new() abort
-    if !dutyl#core#toolExecutable('dscanner')
+    if !dutyl#register#toolExecutable('dscanner')
         return {}
     endif
 

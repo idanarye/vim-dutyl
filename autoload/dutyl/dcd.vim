@@ -1,6 +1,6 @@
 function! dutyl#dcd#new() abort
-    if !dutyl#core#toolExecutable('dcd-client')
-                \|| !dutyl#core#toolExecutable('dcd-server')
+    if !dutyl#register#toolExecutable('dcd-client')
+                \|| !dutyl#register#toolExecutable('dcd-server')
         return {}
     endif
 
