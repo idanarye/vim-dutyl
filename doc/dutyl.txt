@@ -4,7 +4,7 @@
 Author:  Idan Arye <https://github.com/idanarye/>
 License: Same terms as Vim itself (see |license|)
 
-Version: 1.4.3+
+Version: 1.5.0
 
 INTRODUCTION                                                         *dutyl*
 
@@ -25,6 +25,8 @@ Currently supported features:
 * Syntax and style checks using Dscanner
 * Updating the tags file using Dscanner
 * Recognizing the project's root and running commands there
+* Formatting code using dfmt
+* Indenting using dfmt
 
 
 REQUIREMENTS                                            *dutyl-requirements*
@@ -34,7 +36,8 @@ about the project, you need DUB(http://code.dlang.org/download). If you want
 it to use DCD for autocompletion, you need
 DCD(https://github.com/Hackerpilot/DCD)(currently tested with version 0.4.0).
 If you want it to use Dscanner, you need
-Dscanner(https://github.com/Hackerpilot/Dscanner).
+Dscanner(https://github.com/Hackerpilot/Dscanner). If you want it to use
+dfmt, you need dfmt(https://github.com/Hackerpilot/dfmt).
 
 
 CONFIGURATION                                          *dutyl-configuration*
@@ -185,3 +188,17 @@ CTags updating checks requires Dscanner.
 
 Use *:DUupdateCTags* to update the CTags. The tags will be written to a local
 file named "tags", unless |g:dutyl_tagsFileName| is set.
+
+
+FORMATTING                                                *dutyl-formatting*
+
+Formatting is done using dfmt and invoked automatically or by using Vim's |gq|
+operator. dfmt read it's option using .editorconfig files, so you can't and
+don't need to configure the style from Dutyl.
+
+INDENTATION                                              *dutyl-indentation*
+
+Indentation is done using dfmt and invoked automatically or by using Vim's |=|
+operator. Note that Vim's indent works by evaluating 'indentexpr' for each
+line, so indenting many lines at once can be slow since it needs to invoke
+dfmt many times.

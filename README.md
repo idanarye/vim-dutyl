@@ -18,6 +18,8 @@ Currently supported features:
 * Syntax and style checks using Dscanner
 * Updating the tags file using Dscanner
 * Recognizing the project's root and running commands there
+* Formatting code using dfmt
+* Indenting using dfmt
 
 
 REQUIREMENTS
@@ -28,7 +30,8 @@ about the project, you need [DUB](http://code.dlang.org/download). If you want
 it to use DCD for autocompletion, you need
 [DCD](https://github.com/Hackerpilot/DCD)(currently tested with version 0.4.0).
 If you want it to use Dscanner, you need
-[Dscanner](https://github.com/Hackerpilot/Dscanner).
+[Dscanner](https://github.com/Hackerpilot/Dscanner). If you want it to use
+dfmt, you need [dfmt](https://github.com/Hackerpilot/dfmt).
 
 
 CONFIGURATION
