@@ -13,7 +13,7 @@ endfunction
 
 let s:functions={}
 
-let s:DEFINING_FILES = ['dub.json', 'package.json', 'dub.selections.json']
+let s:DEFINING_FILES = ['dub.sdl', 'dub.json', 'package.json', 'dub.selections.json']
 
 function! s:functions.projectRoot() abort
     let l:dubFileMatches=dutyl#util#globInParentDirectories(s:DEFINING_FILES)
@@ -73,8 +73,8 @@ function! s:dubDescribe() abort
     let l:result=substitute(l:result,'\v(^|\n|\r)There was no.{-}($|\n|\r)','','g')
 
     "Replace true with 1 and false with 0
-    let l:result=substitute(l:result,'\vtrue\,?[\n\r]','1\n','g')
-    let l:result=substitute(l:result,'\vfalse\,?[\n\r]','0\n','g')
+    let l:result=substitute(l:result,'\vtrue(\,?)[\n\r]','1\1\n','g')
+    let l:result=substitute(l:result,'\vfalse(\,?)[\n\r]','0\1\n','g')
 
     "Remove linefeeds
     let l:result=substitute(l:result,'\v[\n\r]',' ','g')
