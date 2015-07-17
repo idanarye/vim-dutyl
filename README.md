@@ -76,3 +76,7 @@ let g:dutyl_tagsFileName='newnamefortagsfile'
 ```
 Note that the new tags file name will still have to be in `tags` in order
 for Vim to recognize it.
+
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
