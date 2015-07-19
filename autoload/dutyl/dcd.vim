@@ -20,11 +20,14 @@ function! s:registerImportPaths(importPaths) abort
 endfunction
 
 function! dutyl#dcd#startServer() abort
+    let l:args=[]
     try
-	let l:args=map(dutyl#core#requireFunctions('importPaths').importPaths(),
-		    \'"-I".v:val')
-    catch "Ignore errors and simply don't use them
-	let l:args=[]
+	for l:path in dutyl#core#requireFunctions('importPaths').importPaths()
+	    call add(l:args,'-I')
+	    call add(l:args,l:path)
+	endfor
+    catch
+	"Ignore errors and simply don't use import paths
     endtry
     call dutyl#core#runToolInBackground('dcd-server',l:args)
 endfunction
