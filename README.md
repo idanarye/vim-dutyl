@@ -34,6 +34,19 @@ If you want it to use Dscanner, you need
 dfmt, you need [dfmt](https://github.com/Hackerpilot/dfmt).
 
 
+NOTE ABOUT DCD
+==============
+
+DCD functionality won't work without a `dcd-server` running. Dutyl does not run
+`dcd-server` automatically, but it does offer several commands to ease that
+task:
+
+ - `:DUDCDstartServer` to start DCD
+ - `:DUDCDstopServer` to stop DCD
+ - `:DUDCDrestartServer` to restart DCD
+ - `:DUDCDclearCache` to clear the DCD cache
+
+
 CONFIGURATION
 =============
 
