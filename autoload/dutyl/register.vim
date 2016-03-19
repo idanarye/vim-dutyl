@@ -27,7 +27,14 @@ function! dutyl#register#getToolPath(name) abort
         return a:name
     end
 
-    return get(s:registeredTools,a:name,a:name)
+    let l:result = get(s:registeredTools, a:name, a:name)
+    if type(l:result) == type('')
+        return [l:result]
+    elseif type(l:result) == type([])
+        return l:result
+    else
+        throw 'Wrong type for tool '.a:name)
+    endif
 endfunction
 
 function! s:sortModulesByPriority(module1,module2) abort
@@ -51,5 +58,5 @@ endfunction
 
 "Check if a tool is executable. If not - it can not be used
 function! dutyl#register#toolExecutable(tool) abort
-    return executable(dutyl#register#getToolPath(a:tool))
+    return executable(dutyl#register#getToolPath(a:tool)[0])
 endfunction

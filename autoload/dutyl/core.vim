@@ -122,11 +122,11 @@ endfunction
 
 "Create the command line for running a tool
 function! s:createRunToolCommand(tool,args) abort
-    let l:tool=dutyl#register#getToolPath(a:tool)
-    if !executable(l:tool)
-        throw '`'.l:tool.'` is not executable'
+    let l:tool = dutyl#register#getToolPath(a:tool)
+    if !executable(l:tool[0])
+        throw '`'.l:tool[0].'` is not executable'
     endif
-    let l:result=dutyl#core#shellescape(l:tool)
+    let l:result=join(map(copy(l:tool), 'dutyl#core#shellescape(v:val)'), ' ')
     if type('')==type(a:args)
         let l:result=l:result.' '.a:args
     elseif type([])==type(a:args)
@@ -142,10 +142,10 @@ endfunction
 "background.
 function! s:createRunToolCommandIgnoreVimproc(tool,args) abort
     let l:tool=dutyl#register#getToolPath(a:tool)
-    if !executable(l:tool)
-        throw '`'.l:tool.'` is not executable'
+    if !executable(l:tool[0])
+        throw '`'.l:tool[0].'` is not executable'
     endif
-    let l:result=shellescape(l:tool)
+    let l:result=join(map(copy(l:tool), 'shellescape(v:val)'), ' ')
     if type('')==type(a:args)
         let l:result=l:result.' '.a:args
     elseif type([])==type(a:args)
