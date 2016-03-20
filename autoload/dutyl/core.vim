@@ -100,7 +100,11 @@ function! dutyl#core#system(command,...) abort
         if empty(a:000)
             return vimproc#system(a:command)
         else
-            return vimproc#system(a:command,a:000[0])
+            if type(a:000[0]) == type([])
+                return vimproc#system(a:command, join(a:000[0], "\n"))
+            else
+                return vimproc#system(a:command, a:000[0])
+            endif
         endif
     else
         if empty(a:000)
