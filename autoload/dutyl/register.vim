@@ -24,7 +24,7 @@ endfunction
 
 function! dutyl#register#getToolPath(name) abort
     if !exists('s:registeredTools')
-        return a:name
+        return [a:name]
     end
 
     let l:result = get(s:registeredTools, a:name, a:name)
