@@ -78,13 +78,17 @@ function! s:parseDscannerCheckResults(rawResult) abort
     let l:result=[]
     for l:resultLine in dutyl#util#splitLines(a:rawResult)
 	let l:parsedLine=matchlist(l:resultLine,'\v^(.{-})\((\d+)\:(\d+)\)\[(\w+)\]\:\s+(.*)$')
-	call add(l:result,{
-		    \'filename':l:parsedLine[1],
-		    \'lnum':l:parsedLine[2],
-		    \'col':l:parsedLine[3],
-		    \'type':l:parsedLine[4],
-		    \'text':l:parsedLine[5],
-		    \})
+	if empty(l:parsedLine)
+	    echoerr '[dscanner] '.l:resultLine
+	else
+	    call add(l:result,{
+			\'filename':l:parsedLine[1],
+			\'lnum':l:parsedLine[2],
+			\'col':l:parsedLine[3],
+			\'type':l:parsedLine[4],
+			\'text':l:parsedLine[5],
+			\})
+	endif
     endfor
     return l:result
 endfunction
