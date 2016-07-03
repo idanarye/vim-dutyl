@@ -63,7 +63,7 @@ endfunction
 "Calls 'dub describe' and turns the result to Vim's data types
 function! s:dubDescribe() abort
     let l:result=dutyl#util#runInDirectory(s:functions.projectRoot(),
-                \function('dutyl#core#runTool'),'dub',['describe','--annotate'])
+                \function('dutyl#core#runTool'),'dub',['describe','--annotate', '--vquiet'])
     if !empty(dutyl#core#shellReturnCode())
         throw 'Failed to execute `dub describe`'
     endif
