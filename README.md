@@ -90,6 +90,15 @@ let g:dutyl_tagsFileName='newnamefortagsfile'
 Note that the new tags file name will still have to be in `tags` in order
 for Vim to recognize it.
 
+If dfmt is detected in your path(or if you set it's path via
+`dutyl#register#tool`), Dutyl will automatically set `formatexpr` and
+`indentexpr` when you enter a D file. To disable this, set
+`g:dutyl_dontHandleFormat` and/or `g:dutyl_dontHandleIndent` to 1:
+```vim
+let g:dutyl_dontHandleFormat = 1
+let g:dutyl_dontHandleIndent = 1
+```
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md).
