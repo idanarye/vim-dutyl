@@ -47,18 +47,28 @@ endfunction
 "Exactly what it says on the tin
 function! dutyl#displayDDocForSymbolUnderCursor() abort
     try
-        let l:dutyl=dutyl#core#requireFunctions('importPaths','ddocForSymobolInBuffer')
+        let l:dutyl = dutyl#core#requireFunctions('importPaths', 'signaturesForSymobolInBuffer', 'ddocForSymobolInBuffer')
     catch
         echoerr 'Unable to display DDoc: '.v:exception
         return
     endtry
-    let l:args=dutyl#core#gatherCommonArguments(l:dutyl)
-    let l:args.symbol=expand('<cword>')
-    let l:ddocs=l:dutyl.ddocForSymobolInBuffer(l:args)
+    let l:args = dutyl#core#gatherCommonArguments(l:dutyl)
+    let l:args.symbol = expand('<cword>')
+    let l:signatures = l:dutyl.signaturesForSymobolInBuffer(l:args)
+    let l:ddocs = l:dutyl.ddocForSymobolInBuffer(l:args)
+
+    for l:sig in l:signatures
+        echo "\t" l:sig
+    endfor
+
+    if !empty(l:signatures) && !empty(l:ddocs)
+        echo ' '
+    endif
+
     for l:i in range(len(l:ddocs))
-        if 0<l:i
+        if 0 < l:i
             "Print a vertical line:
-            echo repeat('_',&columns-1)
+            echo repeat('_', &columns - 1)
             echo ' '
         endif
         echo l:ddocs[l:i]

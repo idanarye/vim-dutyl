@@ -63,17 +63,17 @@ function! s:functions.complete(args) abort
     let l:scanResult=s:runDCDToGetAutocompletion(a:args.bufferLines,a:args.bytePos)
 
     "Split the result text to lines.
-    let resultLines=dutyl#util#splitLines(l:scanResult)
+    let l:resultLines=dutyl#util#splitLines(l:scanResult)
 
     "if we have less than one line - something wen wrong
-    if empty(resultLines)
+    if empty(l:resultLines)
         return 'bad...'
     endif
     "identify completion type via the first line.
-    if resultLines[0]=='identifiers'
-        return s:parsePairs(a:args.base,resultLines[1:],'','')
-    elseif resultLines[0]=='calltips'
-        return s:parseCalltips(a:args.base,resultLines[1:])
+    if l:resultLines[0]=='identifiers'
+        return s:parsePairs(a:args.base,l:resultLines[1:],'','')
+    elseif l:resultLines[0]=='calltips'
+        return s:parseCalltips(a:args.base,l:resultLines[1:])
     endif
     return []
 endfunction
@@ -143,6 +143,23 @@ function! s:functions.declarationsOfSymbol(args) abort
 	end
     endfor
     return dutyl#util#unique(l:result)
+endfunction
+
+function! s:functions.signaturesForSymobolInBuffer(args) abort
+    let l:identifierEnd = match(a:args.bufferLines[a:args.lineNumber - 1], '\W', a:args.columnNumber)
+    let l:replaceLineWith = a:args.bufferLines[a:args.lineNumber - 1][: l:identifierEnd - 1]
+    let l:bufferLines = a:args.bufferLines[:a:args.lineNumber - 2] + [l:replaceLineWith.'(']
+    let l:bytePos = a:args.bytePos + l:identifierEnd - a:args.columnNumber + 1
+
+    let l:scanResult = s:runDCDToGetAutocompletion(l:bufferLines, l:bytePos)
+    let l:resultLines = dutyl#util#splitLines(l:scanResult)
+    if empty(l:resultLines)
+	return []
+    elseif 'calltips' != remove(l:resultLines, 0)
+	return []
+    endif
+    call filter(l:resultLines, 'v:val[:4] != "this("')
+    return l:resultLines
 endfunction
 
 
