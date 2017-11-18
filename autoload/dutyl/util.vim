@@ -123,8 +123,9 @@ endfunction
 "directory
 function! dutyl#util#runInDirectory(directory,action,...) abort
     let l:cwd=shellescape(getcwd())
+    let a:directory=shellescape(a:directory)
     try
-        execute 'lcd '.shellescape(a:directory)
+        execute 'lcd '.a:directory
         if type(function('tr'))==type(a:action)
             return call(a:action,a:000)
         elseif type('')==type(a:action)
