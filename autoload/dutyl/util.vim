@@ -123,14 +123,16 @@ endfunction
 "directory
 function! dutyl#util#runInDirectory(directory,action,...) abort
     let l:cwd=getcwd()
-    try
-        execute 'lcd '.a:directory
+    try 
+        let l:directory = substitute(a:directory, "\ ", '\\ ', "g")
+        execute 'lcd '.l:directory
         if type(function('tr'))==type(a:action)
             return call(a:action,a:000)
         elseif type('')==type(a:action)
             execute a:action
         endif
     finally
+        let l:cwd = substitute(l:cwd, "\ ", '\\ ', "g")
         execute 'lcd '.l:cwd
     endtry
 endfunction
