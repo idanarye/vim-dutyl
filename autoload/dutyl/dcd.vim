@@ -67,7 +67,8 @@ function! s:functions.complete(args) abort
 
     "if we have less than one line - something wen wrong
     if empty(l:resultLines)
-        return 'bad...'
+        echoerr 'bad...'
+        return
     endif
     "identify completion type via the first line.
     if l:resultLines[0]=='identifiers'
