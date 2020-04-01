@@ -73,7 +73,11 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
         let l:code = a:code
     endif
 
-    let l:markBeforeLastLine = 'dutylmark'.localtime()
+    if l:code[-1] =~ '\v^\s*$'
+        return 0
+    endif
+
+    let l:markBeforeLastLine = 'dutylmark-'.localtime()
     call insert(l:code, '//', -1)
     call insert(l:code, '// '.l:markBeforeLastLine, -1)
     call add(l:code, '//')
@@ -96,6 +100,7 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
         let l:line = l:formattedCode[l:lineIndex]
         if len(l:markBeforeLastLine) < len(l:line)
             if l:line[-len(l:markBeforeLastLine) : -1] == l:markBeforeLastLine
+                echom printf('at line %s, found mark', l:lineIndex)
                 break
             endif
         endif
@@ -105,9 +110,11 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
         return -1
     endif
     let l:lineIndex += 1
-    if empty(l:formattedCode[l:lineIndex])
+    if l:formattedCode[l:lineIndex] =~ '\v^\s*$'
         let l:lineIndex += 1
     endif
+    echom printf('Found mark at line %s', l:lineIndex)
+    echom printf('line is %s', l:formattedCode[l:lineIndex + 1])
 
     return strwidth(s:getIndentFrom(l:code)) - strwidth(s:getIndentFrom(l:formattedCode)) + strwidth(matchstr(l:formattedCode[l:lineIndex], '\v^\_s*\ze\S'))
 endfunction
