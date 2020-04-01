@@ -63,6 +63,27 @@ function! s:functions.formatCode(code) abort
     return l:result
 endfunction
 
+function! s:findLineIndexAfterMarker(marker, lines) abort
+    let l:lineIndex = len(a:lines) - 1
+    while 0 <= l:lineIndex
+        let l:line = a:lines[l:lineIndex]
+        if len(a:marker) < len(l:line)
+            if l:line[-len(a:marker) : -1] == a:marker
+                break
+            endif
+        endif
+        let l:lineIndex -= 1
+    endwhile
+    if l:lineIndex < 0
+        return -1
+    endif
+    let l:lineIndex += 1
+    if a:lines[l:lineIndex] =~ '\v^\s*$'
+        let l:lineIndex += 1
+    endif
+    return l:lineIndex
+endfunction
+
 function! s:functions.calcIndentForLastLineOfCode(code) abort
     if empty(a:code)
         return -1
@@ -75,6 +96,18 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
 
     if l:code[-1] =~ '\v^\s*$'
         return 0
+    endif
+
+    let l:origLineBeforeIndex = len(l:code) - 2
+    while 0 <= l:origLineBeforeIndex && l:code[l:origLineBeforeIndex] =~ '\v^\s*$'
+        let l:origLineBeforeIndex -= 1
+    endwhile
+    if 0 <= l:origLineBeforeIndex
+        let l:origIndentOfLineBefore = strwidth(s:getIndentFrom(l:code[l:origLineBeforeIndex]))
+
+        let l:markBeforeLineBeforeLast = 'dutylmarkLineBefore-'.localtime()
+        call insert(l:code, '//', l:origLineBeforeIndex)
+        call insert(l:code, '// '.l:markBeforeLineBeforeLast, l:origLineBeforeIndex)
     endif
 
     let l:markBeforeLastLine = 'dutylmark-'.localtime()
@@ -92,29 +125,26 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
                 \'--brace_style', 'allman',
                 \]
 
+
     let l:formattedCode = dutyl#util#splitLines(dutyl#core#runToolIgnoreStderr('dfmt', l:dfmtArgs, l:code))
 
     "Find the mark we placed:
-    let l:lineIndex = len(l:formattedCode) - 1
-    while 0 <= l:lineIndex
-        let l:line = l:formattedCode[l:lineIndex]
-        if len(l:markBeforeLastLine) < len(l:line)
-            if l:line[-len(l:markBeforeLastLine) : -1] == l:markBeforeLastLine
-                echom printf('at line %s, found mark', l:lineIndex)
-                break
-            endif
-        endif
-        let l:lineIndex -= 1
-    endwhile
-    if l:lineIndex < 0
-        return -1
-    endif
-    let l:lineIndex += 1
-    if l:formattedCode[l:lineIndex] =~ '\v^\s*$'
-        let l:lineIndex += 1
-    endif
-    echom printf('Found mark at line %s', l:lineIndex)
-    echom printf('line is %s', l:formattedCode[l:lineIndex + 1])
+    let l:lineIndex = s:findLineIndexAfterMarker(l:markBeforeLastLine, l:formattedCode)
+    let l:formattedLine = l:formattedCode[l:lineIndex]
+    let l:formattedIndent = strwidth(s:getIndentFrom(l:formattedLine))
 
-    return strwidth(s:getIndentFrom(l:code)) - strwidth(s:getIndentFrom(l:formattedCode)) + strwidth(matchstr(l:formattedCode[l:lineIndex], '\v^\_s*\ze\S'))
+    if l:origLineBeforeIndex < 0
+        return l:formattedIndent
+    else
+        let l:lineBeforeIndex = s:findLineIndexAfterMarker(l:markBeforeLineBeforeLast, l:formattedCode)
+        let l:formattedLineBefore = l:formattedCode[l:lineBeforeIndex]
+        let l:formattedIndentBefore = strwidth(s:getIndentFrom(l:formattedLineBefore))
+
+        let l:result = l:formattedIndent - l:formattedIndentBefore + l:origIndentOfLineBefore
+        if l:result < 0
+            return 0
+        else
+            return l:result
+        endif
+    endif
 endfunction
