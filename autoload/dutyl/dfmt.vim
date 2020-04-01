@@ -84,6 +84,20 @@ function! s:findLineIndexAfterMarker(marker, lines) abort
     return l:lineIndex
 endfunction
 
+" NOTE: this function is useful for debugging, so just leave it here and
+" uncomment it when you need it.
+" function! s:debugShow(caption, lines) abort
+    " if type(a:lines) == type('')
+        " let l:lines = dutyl#util#splitLines(a:lines)
+    " else
+        " let l:lines = a:lines
+    " endif
+    " echom printf('%s:', a:caption)
+    " for l:i in range(len(l:lines))
+        " echom printf('  %4d  `%s`', l:i, l:lines[l:i])
+    " endfor
+" endfunction
+
 function! s:functions.calcIndentForLastLineOfCode(code) abort
     if empty(a:code)
         return -1
@@ -107,8 +121,8 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
         let l:origIndentOfLineBefore = strwidth(s:getIndentFrom(l:code[l:origLineBeforeIndex]))
 
         let l:markBeforeLineBeforeLast = 'dutylmarkLineBefore-'.localtime()
-        call insert(l:code, '//', l:origLineBeforeIndex)
         call insert(l:code, '// '.l:markBeforeLineBeforeLast, l:origLineBeforeIndex)
+        call insert(l:code, '//', l:origLineBeforeIndex)
     endif
 
     let l:markBeforeLastLine = 'dutylmark-'.localtime()
@@ -124,7 +138,9 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
                 \]
 
 
+    " call s:debugShow('dfmt input', l:code)
     let l:formattedCode = dutyl#util#splitLines(dutyl#core#runToolIgnoreStderr('dfmt', l:dfmtArgs, l:code))
+    " call s:debugShow('dfmt output', l:formattedCode)
 
     "Find the mark we placed:
     let l:lineIndex = s:findLineIndexAfterMarker(l:markBeforeLastLine, l:formattedCode)
