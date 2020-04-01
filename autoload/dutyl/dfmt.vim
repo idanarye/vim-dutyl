@@ -95,7 +95,8 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
     endif
 
     if l:code[-1] =~ '\v^\s*$'
-        return 0
+        " return 0
+        call add(l:code, 'fakeLineForIndentation')
     endif
 
     let l:origLineBeforeIndex = len(l:code) - 2
@@ -113,9 +114,6 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
     let l:markBeforeLastLine = 'dutylmark-'.localtime()
     call insert(l:code, '//', -1)
     call insert(l:code, '// '.l:markBeforeLastLine, -1)
-    call add(l:code, '//')
-    call add(l:code, 'foo();')
-    let l:lastLineLength = len(l:code[-1])
 
     "This will not actually affect the brace style, we are only indenting here
     "and can't break lines, but if the bracing style is allman and dfmt is
