@@ -129,6 +129,11 @@ function! s:functions.calcIndentForLastLineOfCode(code) abort
     call insert(l:code, '//', -1)
     call insert(l:code, '// '.l:markBeforeLastLine, -1)
 
+    " Workaround for https://github.com/dlang-community/dfmt/issues/474
+    " By adding a } after the offending `scope (exit)` (and other things that
+    " trigger the bug?) we avoid the assertion
+    call add(l:code, '}')
+
     "This will not actually affect the brace style, we are only indenting here
     "and can't break lines, but if the bracing style is allman and dfmt is
     "configured to use one of the other bracing styles the opening brace will
