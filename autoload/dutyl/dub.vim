@@ -56,7 +56,7 @@ function! s:functions.importPaths() dict abort
             endfor
         endfor
     catch /.*/
-        echo "Can not get dub project import path!"
+        echo "Can not get dub project import path! " . v:exception
     endtry
 
     let self.cache.dub.importPaths = dutyl#util#normalizePaths(l:result)
@@ -67,9 +67,9 @@ endfunction
 "Calls 'dub describe' and turns the result to Vim's data types
 function! s:dubDescribe() abort
     let l:result=dutyl#util#runInDirectory(s:functions.projectRoot(),
-                \function('dutyl#core#runTool'),'dub',['describe','--annotate', '--vquiet'])
+                \function('dutyl#core#runTool'),'dub',['describe','--annotate', '--verror'])
     if !empty(dutyl#core#shellReturnCode())
-        throw 'Failed to execute `dub describe`'
+        throw 'Failed to execute `dub describe --annotate`: ' . l:result
     endif
 
     "If package.json instead of dub.json or visa versa, dub will sometimes
